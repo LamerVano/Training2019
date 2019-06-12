@@ -17,9 +17,13 @@ namespace DependencyInjection
         {
            
 
-            container.RegisterType<IAccessing, Accessing>();
+            container.RegisterType<IUserAccessing, UserAccessing>();
+            container.RegisterType<IArticleAccessing, ArticleAccessing>();
+            container.RegisterType<ICategoryAccessing, CategoryAccessing>();
 
-            container.RegisterType<IDataAcces, DataAcces.DataAcces>();
+            container.RegisterType<IUsersData, UserData>();
+            container.RegisterType<IArticleData, ArticleData>();
+            container.RegisterType<ICategoryData, CategoryData>();
 
             return container;
         }
