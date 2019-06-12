@@ -70,9 +70,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArticleData.cs" />
+    <Compile Include="CategoryData.cs" />
     <Compile Include="DataAcces.cs" />
-    <Compile Include="IDataAcces.cs" />
+    <Compile Include="IArticleData.cs" />
+    <Compile Include="ICategoryData.cs" />
+    <Compile Include="IUsersData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserData.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj">
