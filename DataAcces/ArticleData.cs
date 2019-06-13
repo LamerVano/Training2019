@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Common;
 
 namespace DataAcces
@@ -15,14 +12,14 @@ namespace DataAcces
         {
             string sqlExpression = "AddArticle";
 
-            return CallProcedure(article, sqlExpression);
+            return CallProcedure(article, sqlExpression) && ProcedureReference(article, "AddReference");
         }
 
         public bool UpdateArticle(Article article)
         {
             string sqlExpression = "UpdateArticle";
 
-            return CallProcedure(article, sqlExpression);
+            return CallProcedure(article, sqlExpression) && DelReference(article.Id) && ProcedureReference(article, "AddReference");
         }
 
         public bool DelArticle(int articleId)
@@ -53,9 +50,37 @@ namespace DataAcces
             return true;
         }
 
+        private bool DelReference(int articleId)
+        {
+            string sqlExpression = "Delete ArticlesRef where ArticlesRef.IdArticle = @id";
+
+            Category category = new Category();
+
+            using (SqlConnection connection = new SqlConnection(_connection))
+            {
+                TryOpenConnection(connection);
+
+                SqlCommand command = new SqlCommand(sqlExpression, connection);
+
+                command.Parameters.Add("@id", SqlDbType.Int);
+                command.Parameters["@id"].Value = articleId;
+
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         public Article GetArticle(int articleId)
         {
-            string sqlExpression = String.Format("SELECT Id, Name, Date, Language, PictureRef, VideoRef FROM Articles Where Id = '{0}'", articleId);
+            string sqlExpression = "SELECT Id, Name, Date, Language, PictureRef, VideoRef FROM Articles Where Id = @id";
 
             Article article = new Article();
 
@@ -64,6 +89,9 @@ namespace DataAcces
                 TryOpenConnection(connection);
 
                 SqlCommand command = new SqlCommand(sqlExpression, connection);
+
+                command.Parameters.Add("@id", SqlDbType.Int);
+                command.Parameters["@id"].Value = articleId;
 
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
@@ -76,6 +104,8 @@ namespace DataAcces
                         article.Language = (string)reader["Language"];
                         article.Picture = (string)reader["PictureRef"];
                         article.Video = (string)reader["VideoRef"];
+
+                        article.Reference = GetReferences(article.Id, connection);
                     }
                 }
             }
@@ -87,8 +117,8 @@ namespace DataAcces
         {
             List<Article> articles = new List<Article>();
 
-            string sqlExpression = String.Format("SELECT Id, Name, Date, Language, PictureRef, VideoRef FROM Articles");
-
+            string sqlExpression = "SELECT Id, Name, Date, Language, PictureRef, VideoRef FROM Articles";
+                        
             using (SqlConnection connection = new SqlConnection(_connection))
             {
                 TryOpenConnection(connection);
@@ -109,6 +139,8 @@ namespace DataAcces
                             article.Language = (string)reader["Language"];
                             article.Picture = (string)reader["PictureRef"];
                             article.Video = (string)reader["VideoRef"];
+
+                            article.Reference = GetReferences(article.Id, connection);                            
 
                             articles.Add(article);
                         }
@@ -180,6 +212,45 @@ namespace DataAcces
                     return false;
                 }
             }
+            return true;
+        }
+
+        private bool ProcedureReference(Article article, string procedureName)
+        {
+            foreach (ArticleReference reference in article.Reference)
+            {
+                using (SqlConnection connection = new SqlConnection(_connection))
+                {
+                    TryOpenConnection(connection);
+
+                    SqlCommand command = new SqlCommand(procedureName, connection);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    SqlParameter idParam = new SqlParameter
+                    {
+                        ParameterName = "@articleId",
+                        Value = article.Id
+                    };
+                    command.Parameters.Add(idParam);
+
+                    SqlParameter nameParam = new SqlParameter
+                    {
+                        ParameterName = "@referenceId",
+                        Value = reference.Id
+                    };
+                    command.Parameters.Add(nameParam);
+
+                    try
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+                }
+            }
+
             return true;
         }
     }
