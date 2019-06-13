@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Common;
 
 namespace DataAcces
@@ -55,7 +52,43 @@ namespace DataAcces
 
         public IEnumerable<Article> GetArticles(int categoryId)
         {
-            throw new NotImplementedException();
+            List<Article> articles = new List<Article>();
+
+            string sqlExpressionArticles = "SELECT ArticleId, Name, Date, Language, PictureRef, VideoRef FROM ArticlesOfCategory WHERE CategoryId = @id";
+            
+            using (SqlConnection connection = new SqlConnection(_connection))
+            {
+                TryOpenConnection(connection);
+
+                SqlCommand command = new SqlCommand(sqlExpressionArticles, connection);
+
+                command.Parameters.Add("@id", SqlDbType.Int);
+                command.Parameters["@id"].Value = categoryId;
+                
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            Article article = new Article();
+
+                            article.Id = (int)reader["ArticleId"];
+                            article.Name = (string)reader["Name"];
+                            article.Date = (DateTime)reader["Date"];
+                            article.Language = (string)reader["Language"];
+                            article.Picture = (string)reader["PictureRef"];
+                            article.Video = (string)reader["VideoRef"];
+
+                            article.Reference = GetReferences(article.Id, connection);
+
+                            articles.Add(article);
+                        }
+                    }
+                }
+            }
+
+            return articles;
         }
 
         public IEnumerable<Category> GetCategories()
@@ -154,5 +187,7 @@ namespace DataAcces
             }
             return true;
         }
+
+        
     }
 }

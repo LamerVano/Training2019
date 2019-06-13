@@ -20,8 +20,8 @@ namespace Common
         public string Language { get; set; }
         [StringLength(256)]
         public string Picture { get; set; }
-        [Required]
         [StringLength(256)]
         public string Video { get; set; }
+        public List<ArticleReference> Reference { get; set; }
     }
 }
