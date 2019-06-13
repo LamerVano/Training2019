@@ -13,25 +13,50 @@ namespace InfoPortal.Controllers
 {
     public class ArticleController : ApiController
     {
-        [Dependency]
-        IAccessing Accessing { get; set; }
+        IArticleAccessing _accessing;
+
+        public ArticleController(IArticleAccessing accessing)
+        {
+            _accessing = accessing;
+        }
 
         // GET api/article/5
-        public IArticle Get(int id)
+        public Article Get(int id)
         {
-            return Accessing.GetArticle(id);
+            return _accessing.GetArticle(id);
         }
-        
-        // PUT api/article/5
-        public void Put(int id, [FromBody]IArticle article)
+
+        public bool Post([FromBody]Article article)
         {
-            Accessing.ChangeArticle(article);
+            if (ModelState.IsValid)
+            {
+                return _accessing.AddArticle(article);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        // PUT api/article/5
+        //[Authorize(Roles = Roles.EDITOR)]
+        public bool Put(int id, [FromBody]Article article)
+        {
+            if (ModelState.IsValid)
+            {
+                return _accessing.UpdateArticle(article);
+            }
+            else
+            {
+                return false;
+            }
         }
 
         // DELETE api/article/5
-        public void Delete(int id)
+        //[Authorize(Roles = Roles.EDITOR)]
+        public bool Delete(int id)
         {
-            Accessing.DelArticle(id);
+            return _accessing.DelArticle(id);
         }
     }
 }

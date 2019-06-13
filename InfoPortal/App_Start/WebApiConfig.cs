@@ -29,7 +29,7 @@ namespace InfoPortal
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
-                defaults: new { controller = "main", id = RouteParameter.Optional }
+                defaults: new { controller = "Category", id = RouteParameter.Optional }
             );
 
             config.Formatters.Remove(config.Formatters.XmlFormatter);

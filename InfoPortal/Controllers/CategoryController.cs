@@ -12,36 +12,59 @@ namespace InfoPortal.Controllers
 {
     public class CategoryController : ApiController
     {
-        [Dependency]
-        IAccessing Accessing { get; set; }
-        // GET api/values
-        public IEnumerable<ICategory> Get()
+        ICategoryAccessing _accessing;
+
+        public CategoryController(ICategoryAccessing accessing)
         {
-            return Accessing.GetCategories();
+            _accessing = accessing;
+        }
+
+
+        // GET api/values
+        public IEnumerable<Category> Get()
+        {
+            return _accessing.GetCategories();
         }
 
         // GET api/values/5
-        public IEnumerable<IArticle> Get(int id)
+        public IEnumerable<Article> Get(int id)
         {
-            return Accessing.GetArticles(id);
+            return _accessing.GetArticles(id);
         }
 
         // POST api/values
-        public void Post([FromBody]ICategory category)
+        //[Authorize(Roles = Roles.EDITOR)]
+        public bool Post([FromBody]Category category)
         {
-            Accessing.AddCategory(category);
+            if (ModelState.IsValid)
+            {
+                return _accessing.AddCategory(category);
+            }
+            else
+            {
+                return false;
+            } 
         }
 
         // PUT api/values/5
-        public void Put(int id, [FromBody]ICategory category)
+        //[Authorize(Roles = Roles.EDITOR)]
+        public bool Put(int id, [FromBody]Category category)
         {
-            Accessing.ChangeCategory(category);
+            if (ModelState.IsValid)
+            {
+                return _accessing.UpdateCategory(category);
+            }
+            else
+            {
+                return false;
+            }
         }
 
         // DELETE api/values/5
-        public void Delete(int id)
+        //[Authorize(Roles = Roles.EDITOR)]
+        public bool Delete(int id)
         {
-            Accessing.DelCategory(id);
+            return _accessing.DelCategory(id);
         }
     }
 }
