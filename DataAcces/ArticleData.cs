@@ -6,160 +6,18 @@ using Common;
 
 namespace DataAcces
 {
-    public class ArticleData : DataAcces, IArticleData
-    {
-        public bool AddArticle(Article article)
+    public class ArticleData : Connect, IArticleData
+    {        
+        private bool CallProcedure(Article article, string sqProcedure)
         {
-            string sqlExpression = "AddArticle";
-
-            return CallProcedure(article, sqlExpression) && ProcedureReference(article, "AddReference");
-        }
-
-        public bool UpdateArticle(Article article)
-        {
-            string sqlExpression = "UpdateArticle";
-
-            return CallProcedure(article, sqlExpression) && DelReference(article.Id) && ProcedureReference(article, "AddReference");
-        }
-
-        public bool DelArticle(int articleId)
-        {
-            string sqlExpression = "DELETE Category WHERE Id = @id";
-
-            Category category = new Category();
-
-            using (SqlConnection connection = new SqlConnection(_connection))
+            using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 TryOpenConnection(connection);
 
-                SqlCommand command = new SqlCommand(sqlExpression, connection);
-
-                command.Parameters.Add("@id", SqlDbType.Int);
-                command.Parameters["@id"].Value = articleId;
-
-                try
+                SqlCommand command = new SqlCommand(sqProcedure, connection)
                 {
-                    command.ExecuteNonQuery();
-                }
-                catch
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        private bool DelReference(int articleId)
-        {
-            string sqlExpression = "Delete ArticlesRef where ArticlesRef.IdArticle = @id";
-
-            Category category = new Category();
-
-            using (SqlConnection connection = new SqlConnection(_connection))
-            {
-                TryOpenConnection(connection);
-
-                SqlCommand command = new SqlCommand(sqlExpression, connection);
-
-                command.Parameters.Add("@id", SqlDbType.Int);
-                command.Parameters["@id"].Value = articleId;
-
-                try
-                {
-                    command.ExecuteNonQuery();
-                }
-                catch
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        public Article GetArticle(int articleId)
-        {
-            string sqlExpression = "SELECT Id, Name, Date, Language, PictureRef, VideoRef FROM Articles Where Id = @id";
-
-            Article article = new Article();
-
-            using (SqlConnection connection = new SqlConnection(_connection))
-            {
-                TryOpenConnection(connection);
-
-                SqlCommand command = new SqlCommand(sqlExpression, connection);
-
-                command.Parameters.Add("@id", SqlDbType.Int);
-                command.Parameters["@id"].Value = articleId;
-
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                    {
-                        reader.Read();
-                        article.Id = (int)reader["Id"];
-                        article.Name = (string)reader["Name"];
-                        article.Date = (DateTime)reader["Date"];
-                        article.Language = (string)reader["Language"];
-                        article.Picture = (string)reader["PictureRef"];
-                        article.Video = (string)reader["VideoRef"];
-
-                        article.Reference = GetReferences(article.Id, connection);
-                    }
-                }
-            }
-
-            return article;
-        }
-
-        public IEnumerable<Article> GetArticles()
-        {
-            List<Article> articles = new List<Article>();
-
-            string sqlExpression = "SELECT Id, Name, Date, Language, PictureRef, VideoRef FROM Articles";
-                        
-            using (SqlConnection connection = new SqlConnection(_connection))
-            {
-                TryOpenConnection(connection);
-
-                SqlCommand command = new SqlCommand(sqlExpression, connection);
-
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            Article article = new Article();
-
-                            article.Id = (int)reader["Id"];
-                            article.Name = (string)reader["Name"];
-                            article.Date = (DateTime)reader["Date"];
-                            article.Language = (string)reader["Language"];
-                            article.Picture = (string)reader["PictureRef"];
-                            article.Video = (string)reader["VideoRef"];
-
-                            article.Reference = GetReferences(article.Id, connection);                            
-
-                            articles.Add(article);
-                        }
-                    }
-                }
-            }
-
-            return articles;
-        }
-
-
-        private bool CallProcedure(Article article, string sqlExpression)
-        {
-            using (SqlConnection connection = new SqlConnection(_connection))
-            {
-                TryOpenConnection(connection);
-
-                SqlCommand command = new SqlCommand(sqlExpression, connection);
-                command.CommandType = CommandType.StoredProcedure;
+                    CommandType = CommandType.StoredProcedure
+                };
 
                 SqlParameter idParam = new SqlParameter
                 {
@@ -215,43 +73,153 @@ namespace DataAcces
             return true;
         }
 
-        private bool ProcedureReference(Article article, string procedureName)
+        public IEnumerable<Article> GetByCategoryId(int categoryId)
         {
-            foreach (ArticleReference reference in article.Reference)
+            List<Article> articles = new List<Article>();
+
+            string sqlExpressionArticles = "SELECT ArticleId, Name, Date, Language, PictureRef, VideoRef FROM ArticlesOfCategory WHERE CategoryId = @id";
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                using (SqlConnection connection = new SqlConnection(_connection))
+                TryOpenConnection(connection);
+
+                SqlCommand command = new SqlCommand(sqlExpressionArticles, connection);
+
+                command.Parameters.Add("@id", SqlDbType.Int);
+                command.Parameters["@id"].Value = categoryId;
+
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
-                    TryOpenConnection(connection);
-
-                    SqlCommand command = new SqlCommand(procedureName, connection);
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    SqlParameter idParam = new SqlParameter
+                    if (reader.HasRows)
                     {
-                        ParameterName = "@articleId",
-                        Value = article.Id
-                    };
-                    command.Parameters.Add(idParam);
+                        while (reader.Read())
+                        {
+                            Article article = new Article();
 
-                    SqlParameter nameParam = new SqlParameter
-                    {
-                        ParameterName = "@referenceId",
-                        Value = reference.Id
-                    };
-                    command.Parameters.Add(nameParam);
+                            article.Id = (int)reader["ArticleId"];
+                            article.Name = (string)reader["Name"];
+                            article.Date = (DateTime)reader["Date"];
+                            article.Language = (string)reader["Language"];
+                            article.Picture = (string)reader["PictureRef"];
+                            article.Video = (string)reader["VideoRef"];
 
-                    try
-                    {
-                        command.ExecuteNonQuery();
-                    }
-                    catch
-                    {
-                        return false;
+                            articles.Add(article);
+                        }
                     }
                 }
             }
 
-            return true;
+            return articles;
+        }
+
+        public Article GetById(int id)
+        {
+            string sqlExpression = "SELECT Id, Name, Date, Language, PictureRef, VideoRef FROM Articles Where Id = @id";
+
+            Article article = new Article();
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                TryOpenConnection(connection);
+
+                SqlCommand command = new SqlCommand(sqlExpression, connection);
+
+                command.Parameters.Add("@id", SqlDbType.Int);
+                command.Parameters["@id"].Value = id;
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        reader.Read();
+                        article.Id = (int)reader["Id"];
+                        article.Name = (string)reader["Name"];
+                        article.Date = (DateTime)reader["Date"];
+                        article.Language = (string)reader["Language"];
+                        article.Picture = (string)reader["PictureRef"];
+                        article.Video = (string)reader["VideoRef"];                        
+                    }
+                }
+            }
+
+            return article;
+        }
+
+        public IEnumerable<Article> List()
+        {
+            List<Article> articles = new List<Article>();
+
+            string sqlExpression = "SELECT Id, Name, Date, Language, PictureRef, VideoRef FROM Articles";
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                TryOpenConnection(connection);
+
+                SqlCommand command = new SqlCommand(sqlExpression, connection);
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            Article article = new Article
+                            {
+                                Id = (int)reader["Id"],
+                                Name = (string)reader["Name"],
+                                Date = (DateTime)reader["Date"],
+                                Language = (string)reader["Language"],
+                                Picture = (string)reader["PictureRef"],
+                                Video = (string)reader["VideoRef"]
+                            };
+                            
+                            articles.Add(article);
+                        }
+                    }
+                }
+            }
+
+            return articles;
+        }
+
+        public void Add(Article entity)
+        {
+            string sqlProcedure = "AddArticle";
+
+            CallProcedure(entity, sqlProcedure);
+        }
+
+        public void Delete(Article entity)
+        {
+            string sqlExpression = "DELETE Category WHERE Id = @id";
+
+            Category category = new Category();
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                TryOpenConnection(connection);
+
+                SqlCommand command = new SqlCommand(sqlExpression, connection);
+
+                command.Parameters.Add("@id", SqlDbType.Int);
+                command.Parameters["@id"].Value = entity.Id;
+
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch
+                {
+                    return ;
+                }
+            }
+        }
+
+        public void Edit(Article entity)
+        {
+            string sqlExpression = "UpdateArticle";
+                        
+            CallProcedure(entity, sqlExpression);
         }
     }
 }

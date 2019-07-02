@@ -7,35 +7,65 @@ namespace BuisnesLogic
     public class ArticleAccessing : IArticleAccessing
     {
         IArticleData _articleData;
+        IArticleRefData _articleRefData;
 
-        public ArticleAccessing(IArticleData articleData)
+        public ArticleAccessing(IArticleData articleData, IArticleRefData articleRefData)
         {
             _articleData = articleData;
+            _articleRefData = articleRefData;
         }
 
-        public bool AddArticle(Article article)
+        public void Add(Article entity)
         {
-            return _articleData.AddArticle(article);
+            _articleData.Add(entity);
+            _articleRefData.Add(entity.References);
         }
 
-        public bool UpdateArticle(Article article)
+        public void Delete(Article entity)
         {
-            return _articleData.UpdateArticle(article);
+            _articleData.Delete(entity);
+            _articleRefData.Delete(entity.References);
         }
 
-        public bool DelArticle(int articleId)
+        public void Edit(Article entity)
         {
-            return _articleData.DelArticle(articleId);
+            _articleData.Edit(entity);
+            _articleRefData.Edit(entity.References);
         }
 
-        public Article GetArticle(int articleId)
+        public IEnumerable<Article> GetByCategoryId(int categoryId)
         {
-            return _articleData.GetArticle(articleId);
+            List<Article> articles = new List<Article>();
+            articles.AddRange(_articleData.GetByCategoryId(categoryId));
+
+            foreach(Article article in articles)
+            {
+                article.References = _articleRefData.GetById(article.Id);
+            }
+
+            return articles;
         }
-        
-        public IEnumerable<Article> GetArticles()
+
+        public Article GetById(int id)
         {
-            return _articleData.GetArticles();
+            Article article = _articleData.GetById(id);
+
+            article.References = _articleRefData.GetById(article.Id);
+
+            return article;
+        }
+
+        public IEnumerable<Article> List()
+        {
+            List<Article> articles = new List<Article>();
+            articles.AddRange(_articleData.List());
+
+            foreach (Article article in articles)
+            {
+                article.References = _articleRefData.GetById(article.Id);
+            }
+
+            return articles;
         }
     }
 }

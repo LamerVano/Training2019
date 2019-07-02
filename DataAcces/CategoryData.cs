@@ -6,137 +6,22 @@ using Common;
 
 namespace DataAcces
 {
-    public class CategoryData : DataAcces, ICategoryData
-    {
-        public bool AddCategory(Category category)
-        {
-            string sqlExpression = "AddCategory";
-
-            return CallProcedure(category, sqlExpression);
-        }
-
-        public bool UpdateCategory(Category category)
-        {
-            string sqlExpression = "UpdateCategory";
-
-            return CallProcedure(category, sqlExpression);
-        }
-
-        public bool DelCategory(int categoryId)
-        {
-            string sqlExpression = "DELETE Category WHERE Id = @id";
-
-            Category category = new Category();
-
-            using (SqlConnection connection = new SqlConnection(_connection))
-            {
-                TryOpenConnection(connection);
-
-                SqlCommand command = new SqlCommand(sqlExpression, connection);
-
-                command.Parameters.Add("@id", SqlDbType.Int);
-                command.Parameters["@id"].Value = categoryId;
-
-                try
-                {
-                    command.ExecuteNonQuery();
-                }
-                catch
-                {
-                    return false;
-                }
-            }
-
-            return true;            
-        }
-
-        public IEnumerable<Article> GetArticles(int categoryId)
-        {
-            List<Article> articles = new List<Article>();
-
-            string sqlExpressionArticles = "SELECT ArticleId, Name, Date, Language, PictureRef, VideoRef FROM ArticlesOfCategory WHERE CategoryId = @id";
-            
-            using (SqlConnection connection = new SqlConnection(_connection))
-            {
-                TryOpenConnection(connection);
-
-                SqlCommand command = new SqlCommand(sqlExpressionArticles, connection);
-
-                command.Parameters.Add("@id", SqlDbType.Int);
-                command.Parameters["@id"].Value = categoryId;
-                
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            Article article = new Article();
-
-                            article.Id = (int)reader["ArticleId"];
-                            article.Name = (string)reader["Name"];
-                            article.Date = (DateTime)reader["Date"];
-                            article.Language = (string)reader["Language"];
-                            article.Picture = (string)reader["PictureRef"];
-                            article.Video = (string)reader["VideoRef"];
-
-                            article.Reference = GetReferences(article.Id, connection);
-
-                            articles.Add(article);
-                        }
-                    }
-                }
-            }
-
-            return articles;
-        }
-
-        public IEnumerable<Category> GetCategories()
-        {
-            List<Category> categories = new List<Category>();
-
-            string sqlExpression = String.Format("SELECT Id, Name FROM Category");
-
-            using (SqlConnection connection = new SqlConnection(_connection))
-            {
-                TryOpenConnection(connection);
-
-                SqlCommand command = new SqlCommand(sqlExpression, connection);
-
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            Category category = new Category();
-
-                            category.Id = (int)reader["Id"];
-                            category.Name = (string)reader["Name"];
-
-                            categories.Add(category);
-                        }
-                    }
-                }
-            }
-
-            return categories;
-        }
-
-        public Category GetCategory(int categoryId)
+    public class CategoryData : Connect, ICategoryData
+    {    
+        public Category GetById(int id)
         {
             string sqlExpression = "SELECT Id, Name FROM Category Where Id = @id";
 
             Category category = new Category();
 
-            using (SqlConnection connection = new SqlConnection(_connection))
+            using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 TryOpenConnection(connection);
 
                 SqlCommand command = new SqlCommand(sqlExpression, connection);
 
                 command.Parameters.Add("@id", SqlDbType.Int);
-                command.Parameters["@id"].Value = categoryId;
+                command.Parameters["@id"].Value = id;
 
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
@@ -152,14 +37,87 @@ namespace DataAcces
             return category;
         }
 
-
-        private bool CallProcedure(Category category, string sqlExpression)
+        public IEnumerable<Category> List()
         {
-            using (SqlConnection connection = new SqlConnection(_connection))
+            List<Category> categories = new List<Category>();
+
+            string sqlExpression = String.Format("SELECT Id, Name FROM Category");
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 TryOpenConnection(connection);
 
                 SqlCommand command = new SqlCommand(sqlExpression, connection);
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            Category category = new Category
+                            {
+                                Id = (int)reader["Id"],
+                                Name = (string)reader["Name"]
+                            };
+
+                            categories.Add(category);
+                        }
+                    }
+                }
+            }
+
+            return categories;
+        }
+
+        public void Add(Category entity)
+        {
+            string sqlProcedure = "AddCategory";
+
+            CallProcedure(entity, sqlProcedure);
+        }
+
+        public void Delete(Category entity)
+        {
+            string sqlExpression = "DELETE Category WHERE Id = @id";
+
+            Category category = new Category();
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                TryOpenConnection(connection);
+
+                SqlCommand command = new SqlCommand(sqlExpression, connection);
+
+                command.Parameters.Add("@id", SqlDbType.Int);
+                command.Parameters["@id"].Value = entity.Id;
+
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch
+                {
+                    return ;
+                }
+            }
+        }
+
+        public void Edit(Category entity)
+        {
+            string sqlProcedure = "UpdateCategory";
+
+            CallProcedure(entity, sqlProcedure);
+        }
+
+
+        private bool CallProcedure(Category category, string sqlProcedure)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                TryOpenConnection(connection);
+
+                SqlCommand command = new SqlCommand(sqlProcedure, connection);
                 command.CommandType = System.Data.CommandType.StoredProcedure;
 
                 SqlParameter idParam = new SqlParameter
@@ -172,7 +130,7 @@ namespace DataAcces
                 SqlParameter nameParam = new SqlParameter
                 {
                     ParameterName = "@name",
-                    Value = category.Name                
+                    Value = category.Name
                 };
                 command.Parameters.Add(nameParam);
 
@@ -187,7 +145,5 @@ namespace DataAcces
             }
             return true;
         }
-
-        
     }
 }

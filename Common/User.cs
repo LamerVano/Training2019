@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Common
 {
-    public class User
+    public class User: IEntity
     {
-        public int UserId { get; set; }
+        public int Id { get; set; }
         [Required]
         [StringLength(20)]
         public string FirstName { get; set; }

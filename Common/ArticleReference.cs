@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Common
 {
-    public class ArticleReference
+    public class ArticleReference: IEntity
     {
         public int Id { get; set; }
         [Required]

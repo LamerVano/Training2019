@@ -4,17 +4,7 @@ using Common;
 
 namespace BuisnesLogic
 {
-    public interface ICategoryAccessing
+    public interface ICategoryAccessing: IService<Category>
     {
-        IEnumerable<Article> GetArticles(int categoryId);
-        IEnumerable<Category> GetCategories();
-
-        Category GetCategory(int categoryId);
-
-        bool AddCategory(Category category);
-
-        bool DelCategory(int categoryId);
-
-        bool UpdateCategory(Category category);
     }
 }

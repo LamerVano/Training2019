@@ -5,16 +5,8 @@ using Common;
 
 namespace BuisnesLogic
 {
-    public interface IArticleAccessing
+    public interface IArticleAccessing: IService<Article>
     {
-        IEnumerable<Article> GetArticles();
-
-        Article GetArticle(int articleId);
-
-        bool AddArticle(Article article);
-
-        bool DelArticle(int articleId);
-
-        bool UpdateArticle(Article article);
+        IEnumerable<Article> GetByCategoryId(int categoryId);
     }
 }
