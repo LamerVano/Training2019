@@ -7,40 +7,52 @@ namespace BuisnesLogic
     public class CategoryAccessing : ICategoryAccessing
     {
         ICategoryData _categoryData;
+        ICategoryRefData _categoryRefData;
         
-        public CategoryAccessing(ICategoryData categoryData)
+        public CategoryAccessing(ICategoryData categoryData, ICategoryRefData categoryRefData)
         {
             _categoryData = categoryData;
+            _categoryRefData = categoryRefData;
         }
 
-        public bool AddCategory(Category category)
+        public void Add(Category entity)
         {
-            return _categoryData.AddCategory(category);
+            _categoryData.Add(entity);
+            _categoryRefData.Add(entity.Articles);
         }
 
-        public bool UpdateCategory(Category category)
+        public void Delete(Category entity)
         {
-            return _categoryData.UpdateCategory(category);
+            _categoryData.Delete(entity);
+            _categoryRefData.Delete(entity.Articles);
         }
 
-        public bool DelCategory(int categoryId)
+        public void Edit(Category entity)
         {
-            return _categoryData.DelCategory(categoryId);
+            _categoryData.Edit(entity);
+            _categoryRefData.Edit(entity.Articles);
         }
 
-        public IEnumerable<Article> GetArticles(int categoryId)
+        public Category GetById(int id)
         {
-            return _categoryData.GetArticles(categoryId);
+            Category category = _categoryData.GetById(id);
+
+            category.Articles = _categoryRefData.GetById(category.Id);
+
+            return category;
         }
 
-        public IEnumerable<Category> GetCategories()
+        public IEnumerable<Category> List()
         {
-            return _categoryData.GetCategories();
-        }
+            List<Category> categories = new List<Category>();
+            categories.AddRange(_categoryData.List());
 
-        public Category GetCategory(int categoryId)
-        {
-            return _categoryData.GetCategory(categoryId);
+            foreach (Category category in categories)
+            {
+                category.Articles = _categoryRefData.GetById(category.Id);
+            }
+
+            return categories;
         }
     }
 }

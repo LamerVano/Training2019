@@ -10,35 +10,31 @@ using Unity;
 
 namespace InfoPortal.Controllers
 {
+    [RoutePrefix("api/Category")]
     public class CategoryController : ApiController
     {
-        ICategoryAccessing _accessing;
+        ICategoryAccessing _categoryAccessing;
 
-        public CategoryController(ICategoryAccessing accessing)
+        public CategoryController(ICategoryAccessing categoryAccessing)
         {
-            _accessing = accessing;
+            _categoryAccessing = categoryAccessing;
         }
 
 
-        // GET api/values
-        public IEnumerable<Category> Get()
+        [HttpGet]
+        public IEnumerable<Category> GetCategories()
         {
-            return _accessing.GetCategories();
+            return _categoryAccessing.List();
         }
-
-        // GET api/values/5
-        public IEnumerable<Article> Get(int id)
-        {
-            return _accessing.GetArticles(id);
-        }
-
-        // POST api/values
-        //[Authorize(Roles = Roles.EDITOR)]
-        public bool Post([FromBody]Category category)
+                
+        [HttpPost]
+        public bool AddCategory([FromBody]Category category)
         {
             if (ModelState.IsValid)
             {
-                return _accessing.AddCategory(category);
+                _categoryAccessing.Add(category);
+
+                return true;
             }
             else
             {
@@ -46,13 +42,14 @@ namespace InfoPortal.Controllers
             } 
         }
 
-        // PUT api/values/5
-        //[Authorize(Roles = Roles.EDITOR)]
-        public bool Put(int id, [FromBody]Category category)
+        [HttpPut]
+        public bool EditCategory(int id, [FromBody]Category category)
         {
             if (ModelState.IsValid)
             {
-                return _accessing.UpdateCategory(category);
+                _categoryAccessing.Edit(category);
+
+                return true;
             }
             else
             {
@@ -60,11 +57,12 @@ namespace InfoPortal.Controllers
             }
         }
 
-        // DELETE api/values/5
-        //[Authorize(Roles = Roles.EDITOR)]
-        public bool Delete(int id)
+        [HttpDelete]
+        public bool DeleteCategory([FromBody]Category category)
         {
-            return _accessing.DelCategory(id);
+            _categoryAccessing.Delete(category);
+
+            return true;
         }
     }
 }

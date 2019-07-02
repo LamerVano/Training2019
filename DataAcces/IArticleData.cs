@@ -3,16 +3,8 @@ using System.Collections.Generic;
 
 namespace DataAcces
 {
-    public interface IArticleData
+    public interface IArticleData: IRepository<Article>
     {
-        IEnumerable<Article> GetArticles();
-
-        Article GetArticle(int articleId);
-
-        bool AddArticle(Article article);
-
-        bool DelArticle(int articleId);
-
-        bool UpdateArticle(Article article);
+        IEnumerable<Article> GetByCategoryId(int categoryId);
     }
 }

@@ -1,19 +1,14 @@
-﻿using Common;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using Common;
 
 namespace DataAcces
 {
-    public interface ICategoryData
+    public interface ICategoryData: IRepository<Category>
     {
-        IEnumerable<Category> GetCategories();
-        IEnumerable<Article> GetArticles(int categoryId);
-
-        Category GetCategory(int categoryId);
-
-        bool AddCategory(Category category);
-
-        bool DelCategory(int categoryId);
-
-        bool UpdateCategory(Category category);
     }
 }

@@ -12,6 +12,7 @@ using System.Web;
 
 namespace InfoPortal.Controllers
 {
+    [RoutePrefix("api/Article")]
     public class ArticleController : ApiController
     {
         IArticleAccessing _accessing;
@@ -21,48 +22,84 @@ namespace InfoPortal.Controllers
             _accessing = accessing;
         }
 
-        // GET api/article/5
-        public Article Get(int id)
+        [HttpGet]
+        public IEnumerable<Article> GetArticlesOfCategory(int id)
         {
-            return _accessing.GetArticle(id);
+            return _accessing.GetByCategoryId(id);
         }
 
-        public bool Post([FromBody]Article article, [FromBody] HttpPostedFileBase video, [FromBody] HttpPostedFileBase image)
+        [HttpGet]
+        public Article GetArticle(int id)
+        {
+            return _accessing.GetById(id);
+        }
+
+        [HttpPost]
+        public bool AddArticle([FromBody]Article article, [FromBody] HttpPostedFileBase video, [FromBody] HttpPostedFileBase image)
         {
             if (ModelState.IsValid)
             {
-                if(_accessing.AddArticle(article))
+                _accessing.Add(article);
+
+                if (video != null)
                 {
-                    if (video != null)
+                    string path = "~/Content/Articles/" + article.Id;
+
+                    string videoType = "." + video.FileName.Split('.')[1];
+                    string imgType = "." + image.FileName.Split('.')[1];
+
+                    article.Video = path + videoType;
+                    article.Picture = path + imgType;
+
+                    try
                     {
-                        string path = "~/Content/Articles/" + article.Id;
-
-                        string videoType = "." + video.FileName.Split('.')[1];
-                        string imgType = "." + image.FileName.Split('.')[1];
-
-                        article.Video = path + videoType;
-                        article.Picture = path + imgType;
-
-                        try
-                        {
-                            video.SaveAs(article.Video);
-                            image.SaveAs(article.Picture);
-                            return true;
-                        }
-                        catch
-                        {
-                            _accessing.DelArticle(article.Id);
-                            return false;
-                        }
+                        video.SaveAs(article.Video);
+                        image.SaveAs(article.Picture);
+                        return true;
                     }
-                    else
+                    catch
                     {
-                        _accessing.DelArticle(article.Id);
+                        _accessing.Delete(article);
                         return false;
-                    }                    
+                    }
                 }
                 else
                 {
+                    _accessing.Delete(article);
+                    return false;
+                }
+
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        [HttpPut]
+        public bool AddArticle(int id, [FromBody]Article article, [FromBody] HttpPostedFileBase video, [FromBody] HttpPostedFileBase image)
+        {
+            if (ModelState.IsValid)
+            {
+                _accessing.Add(article);
+                if (video != null)
+                {
+                    try
+                    {
+                        video.SaveAs(article.Video);
+                        image.SaveAs(article.Picture);
+
+                        return true;
+                    }
+                    catch
+                    {
+                        _accessing.Delete(article);
+                        return false;
+                    }
+                }
+                else
+                {
+                    _accessing.Delete(article);
                     return false;
                 }
             }
@@ -72,39 +109,14 @@ namespace InfoPortal.Controllers
             }
         }
 
-        // PUT api/article/5
-        //[Authorize(Roles = Roles.EDITOR)]
-        public bool Put(int id, [FromBody]Article article, [FromBody] HttpPostedFileBase video, [FromBody] HttpPostedFileBase image)
+        [HttpPut]
+        public bool EditArticle(int id, [FromBody]Article article)
         {
             if (ModelState.IsValid)
             {
-                if (_accessing.AddArticle(article))
-                {
-                    if (video != null)
-                    {
-                        try
-                        {
-                            video.SaveAs(article.Video);
-                            image.SaveAs(article.Picture);
+                _accessing.Edit(article);
 
-                            return true;
-                        }
-                        catch
-                        {
-                            _accessing.DelArticle(article.Id);
-                            return false;
-                        }
-                    }
-                    else
-                    {
-                        _accessing.DelArticle(article.Id);
-                        return false;
-                    }
-                }
-                else
-                {
-                    return false;
-                }
+                return true;
             }
             else
             {
@@ -112,23 +124,12 @@ namespace InfoPortal.Controllers
             }
         }
 
-        public bool Put(int id, [FromBody]Article article)
+        [HttpDelete]
+        public bool DeleteArticle([FromBody]Article article)
         {
-            if (ModelState.IsValid)
-            {
-                return _accessing.UpdateArticle(article);
-            }
-            else
-            {
-                return false;
-            }
-        }
+            _accessing.Delete(article);
 
-        // DELETE api/article/5
-        //[Authorize(Roles = Roles.EDITOR)]
-        public bool Delete(int id)
-        {
-            return _accessing.DelArticle(id);
+            return true;
         }
     }
 }

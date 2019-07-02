@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Common
 {
-    public class Article
+    public class Article : IEntity
     {
         public int Id { get; set; }
         [Required]
@@ -22,6 +22,6 @@ namespace Common
         public string Picture { get; set; }
         [StringLength(256)]
         public string Video { get; set; }
-        public List<ArticleReference> Reference { get; set; }
+        public ArticleReferences References { get; set; }
     }
 }

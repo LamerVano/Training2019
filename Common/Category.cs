@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 
 namespace Common
 {
-    public class Category
+    public class Category: IEntity
     {
         public int Id { get; set; }
         [Required]
         public string Name { get; set; }
+        public CategoryReferences Articles { get; set; }
     }
 }

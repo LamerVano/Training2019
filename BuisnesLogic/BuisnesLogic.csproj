@@ -72,9 +72,9 @@
     <Compile Include="Accessing.cs" />
     <Compile Include="ArticleAccessing.cs" />
     <Compile Include="CategoryAccessing.cs" />
-    <Compile Include="IAccessing.cs" />
     <Compile Include="IArticleAccessing.cs" />
     <Compile Include="ICategoryAccessing.cs" />
+    <Compile Include="IService.cs" />
     <Compile Include="IUserAccessing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserAccessing.cs" />

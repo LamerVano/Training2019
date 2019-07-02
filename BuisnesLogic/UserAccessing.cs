@@ -6,36 +6,36 @@ namespace BuisnesLogic
 {
     public class UserAccessing : IUserAccessing
     {
-        IUsersData _userData;
+        IUserData _userData;
 
-        public UserAccessing(IUsersData usersData)
+        public UserAccessing(IUserData usersData)
         {
             _userData = usersData;
         }
 
-        public bool AddUser(User user)
+        public void Add(User entity)
         {
-            return _userData.AddUser(user);
+            _userData.Add(entity);
         }
 
-        public bool UpdateUser(User user)
+        public void Delete(User entity)
         {
-            return _userData.UpdateUser(user);
+            _userData.Delete(entity);
         }
 
-        public bool DelUser(int userId)
+        public void Edit(User entity)
         {
-            return _userData.DelUser(userId);
+            _userData.Edit(entity);
         }
 
-        public User GetUser(int userId)
+        public User GetById(int id)
         {
-            return _userData.GetUser(userId);
+            return _userData.GetById(id);
         }
 
-        public IEnumerable<User> GetUsers()
+        public IEnumerable<User> List()
         {
-            return _userData.GetUsers();
+            return _userData.List();
         }
     }
 }
