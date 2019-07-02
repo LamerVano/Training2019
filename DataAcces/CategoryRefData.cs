@@ -50,7 +50,7 @@ namespace DataAcces
 
         public CategoryReferences GetById(int id)
         {
-            string sqlExpressionReference = "SELECT ArticleId, Name FROM ArticlesOfCategory WHERE Id = @id";
+            string sqlExpressionReference = "SELECT ArticleId, Name FROM ArticlesOfCategory WHERE CategoryId = @id";
 
             CategoryReferences categoryRefs = new CategoryReferences()
             {
@@ -91,7 +91,7 @@ namespace DataAcces
         {
             List<CategoryReferences> categoriesRefsList = new List<CategoryReferences>();
 
-            string sqlExpression = "SELECT Id, ArticleId, Name FROM ArticlesOfCategory";
+            string sqlExpression = "SELECT CategoryId, ArticleId, Name FROM ArticlesOfCategory";
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -107,7 +107,7 @@ namespace DataAcces
                         {
                             CategoryReferences categoryRefs = new CategoryReferences
                             {
-                                Id = (int)reader["Id"]
+                                Id = (int)reader["CategoryId"]
                             };
 
                             categoriesRefsList.Add(categoryRefs);
