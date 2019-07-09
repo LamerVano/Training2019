@@ -1,0 +1,13 @@
+<h2>My Articles</h2>
+<div *ngIf="articles">
+  <ul>
+    <li *ngFor="let article of articles">
+      <a routerLink="/article/detail/{{article.Id}}">
+        <span>{{article.Id}}</span> {{article.Name}}
+      </a>
+      <button class="delete" title="delete article"
+      (click)="delete(article)">Del</button>
+      <a routerLink="/article/add/{{article.Id}}">Add</a>
+    </li>
+  </ul>
+</div>

@@ -1,0 +1,25 @@
+<div *ngIf="article">
+  <h2>{{article.Name}} Detail</h2>
+  <div><span>id: </span>{{article.Id}}</div>
+  <div>
+    <label>
+      Name:
+      <input [(ngModel)]="article.Name" placeholder="Name"/>
+    </label>
+    <label>
+      Language:
+      <input [(ngModel)]="article.Language" placeholder="Language"/>
+    </label>
+    <label>
+      Picture:
+      <input [(ngModel)]="article.Picture" placeholder="Picture"/>
+    </label>
+    <label>
+      Video:
+      <input [(ngModel)]="article.Video" placeholder="Video"/>
+    </label>
+    <app-article-refs [article]="article"></app-article-refs>
+  </div>
+  <button (click)="goBack()">go back</button>
+  <button (click)="save()">save</button>
+</div>
