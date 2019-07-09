@@ -18,13 +18,14 @@ namespace BuisnesLogic
         public void Add(Article entity)
         {
             _articleData.Add(entity);
-            _articleRefData.Add(entity.References);
+            if (entity.References != null)
+                _articleRefData.Add(entity.References);
         }
 
-        public void Delete(Article entity)
+        public void Delete(int id)
         {
-            _articleData.Delete(entity);
-            _articleRefData.Delete(entity.References);
+            _articleData.Delete(id);
+            _articleRefData.Delete(id);
         }
 
         public void Edit(Article entity)
@@ -66,6 +67,11 @@ namespace BuisnesLogic
             }
 
             return articles;
+        }
+
+        public IEnumerable<ArticleReference> ListShortArticle()
+        {
+            return _articleRefData.ListShortArticle();
         }
     }
 }

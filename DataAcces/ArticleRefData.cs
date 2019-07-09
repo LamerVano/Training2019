@@ -19,7 +19,7 @@ namespace DataAcces
             CallProcedure(entity, sqlProcedure);
         }
 
-        public void Delete(ArticleReferences entity)
+        public void Delete(int id)
         {
             string sqlExpression = "Delete ArticlesRef where ArticlesRef.IdArticle = @id";
             
@@ -30,7 +30,7 @@ namespace DataAcces
                 SqlCommand command = new SqlCommand(sqlExpression, connection);
 
                 command.Parameters.Add("@id", SqlDbType.Int);
-                command.Parameters["@id"].Value = entity.Id;
+                command.Parameters["@id"].Value = id;
 
                 try
                 {
@@ -45,7 +45,7 @@ namespace DataAcces
 
         public void Edit(ArticleReferences entity)
         {
-            Delete(entity);
+            Delete(entity.Id);
             Add(entity);
         }
 
@@ -120,7 +120,40 @@ namespace DataAcces
             return articlesRefsList;
         }
 
-        private bool CallProcedure(ArticleReferences articleRefs, string sqlProcedure)
+        public IEnumerable<ArticleReference> ListShortArticle()
+        {
+            List<ArticleReference> articles = new List<ArticleReference>();
+
+            string sqlExpression = "SELECT Id, Name FROM Articles";
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                TryOpenConnection(connection);
+
+                SqlCommand command = new SqlCommand(sqlExpression, connection);
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            ArticleReference article = new ArticleReference
+                            {
+                                Id = (int)reader["Id"],
+                                Name = (string)reader["Name"]
+                            };
+
+                            articles.Add(article);
+                        }
+                    }
+                }
+            }
+
+            return articles;
+        }
+
+        private void CallProcedure(ArticleReferences articleRefs, string sqlProcedure)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -151,13 +184,12 @@ namespace DataAcces
                     {
                         command.ExecuteNonQuery();
                     }
-                    catch
+                    catch (SqlException ex)
                     {
-                        return false;
+                        throw ex;
                     }
                 }
             }
-            return true;
         }
     }
 }

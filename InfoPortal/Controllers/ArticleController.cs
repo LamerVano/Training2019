@@ -9,6 +9,10 @@ using Common;
 using BuisnesLogic;
 using Unity;
 using System.Web;
+using WebApi.OutputCache.V2;
+using MyLogger;
+using InfoPortal.Flters;
+using Common.Exceptions;
 
 namespace InfoPortal.Controllers
 {
@@ -23,113 +27,108 @@ namespace InfoPortal.Controllers
         }
 
         [HttpGet]
+        public IEnumerable<ArticleReference> GetShortArticles()
+        {
+            return _accessing.ListShortArticle();
+        }
+
+        [HttpGet]
+        [Route("byCategory/{id:int}")]
+        [CacheOutput(ClientTimeSpan = 100, ServerTimeSpan = 100)]
         public IEnumerable<Article> GetArticlesOfCategory(int id)
         {
             return _accessing.GetByCategoryId(id);
         }
 
         [HttpGet]
+        [CacheOutput(ClientTimeSpan = 100, ServerTimeSpan = 100)]
         public Article GetArticle(int id)
         {
             return _accessing.GetById(id);
         }
 
         [HttpPost]
-        public bool AddArticle([FromBody]Article article, [FromBody] HttpPostedFileBase video, [FromBody] HttpPostedFileBase image)
+        public void AddArticle([FromBody]Article article, [FromBody] HttpPostedFileBase image)
         {
-            if (ModelState.IsValid)
+            Validation();
+
+
+            string path = "~/Content/Articles/" + article.Id;
+
+            string imgType = "." + image.FileName.Split('.')[1];
+
+            article.Picture = path + imgType;
+
+            try
             {
-                _accessing.Add(article);
-
-                if (video != null)
-                {
-                    string path = "~/Content/Articles/" + article.Id;
-
-                    string videoType = "." + video.FileName.Split('.')[1];
-                    string imgType = "." + image.FileName.Split('.')[1];
-
-                    article.Video = path + videoType;
-                    article.Picture = path + imgType;
-
-                    try
-                    {
-                        video.SaveAs(article.Video);
-                        image.SaveAs(article.Picture);
-                        return true;
-                    }
-                    catch
-                    {
-                        _accessing.Delete(article);
-                        return false;
-                    }
-                }
-                else
-                {
-                    _accessing.Delete(article);
-                    return false;
-                }
-
+                image.SaveAs(article.Picture);
             }
-            else
-            {
-                return false;
+            catch(NotImplementedException)
+            {                
+                throw new NotImplementedException("Not Modify because Image don't Save");
             }
+            
+            _accessing.Add(article);
+
         }
 
         [HttpPut]
-        public bool AddArticle(int id, [FromBody]Article article, [FromBody] HttpPostedFileBase video, [FromBody] HttpPostedFileBase image)
+        public void EditArticle(int id, [FromBody]Article article, [FromBody] HttpPostedFileBase image)
         {
-            if (ModelState.IsValid)
+            Validation();
+            
+            try
             {
-                _accessing.Add(article);
-                if (video != null)
-                {
-                    try
-                    {
-                        video.SaveAs(article.Video);
-                        image.SaveAs(article.Picture);
+                image.SaveAs(article.Picture);
+            }
+            catch (NotImplementedException)
+            {
+                throw new NotImplementedException("Not Save because Image don't Save");
+            }
 
-                        return true;
-                    }
-                    catch
-                    {
-                        _accessing.Delete(article);
-                        return false;
-                    }
-                }
-                else
-                {
-                    _accessing.Delete(article);
-                    return false;
-                }
-            }
-            else
-            {
-                return false;
-            }
+            _accessing.Add(article);
+
         }
 
         [HttpPut]
-        public bool EditArticle(int id, [FromBody]Article article)
+        public void EditArticle(int id, [FromBody]Article article)
         {
-            if (ModelState.IsValid)
-            {
-                _accessing.Edit(article);
+            Validation();
 
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            _accessing.Edit(article);
         }
 
         [HttpDelete]
-        public bool DeleteArticle([FromBody]Article article)
+        public void DeleteArticle(int id)
         {
-            _accessing.Delete(article);
+            _accessing.Delete(id);
+        }
 
-            return true;
+        private void Validation()
+        {
+            if (ModelState.IsValid)
+            {
+                string models = "";
+
+                foreach (var model in ModelState.Keys)
+                {
+                    models += model + " ";
+                }
+
+                Log.Debug("action: " + ActionContext.Request.Method.Method + " " + ActionContext.ActionDescriptor.ActionName + " Data: ' " + models + " ' Valid ");
+            }
+            else
+            {
+                string message = "";
+
+                foreach (var mess in ModelState.Values)
+                {
+                    foreach (var err in mess.Errors)
+                        message += err.ErrorMessage + " ";
+                }
+
+                throw new NotValidException(message);
+            }
         }
     }
 }

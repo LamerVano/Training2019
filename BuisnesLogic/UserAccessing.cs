@@ -18,9 +18,9 @@ namespace BuisnesLogic
             _userData.Add(entity);
         }
 
-        public void Delete(User entity)
+        public void Delete(int id)
         {
-            _userData.Delete(entity);
+            _userData.Delete(id);
         }
 
         public void Edit(User entity)

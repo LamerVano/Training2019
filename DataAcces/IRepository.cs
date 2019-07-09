@@ -13,7 +13,7 @@ namespace DataAcces
         T GetById(int id);
         IEnumerable<T> List();
         void Add(T entity);
-        void Delete(T entity);
+        void Delete(int id);
         void Edit(T entity);
     }
 }

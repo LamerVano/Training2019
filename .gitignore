@@ -5,3 +5,5 @@
 /DataAcces/obj
 bin
 /.vs
+/DependencyInjection/obj
+/Logger/obj

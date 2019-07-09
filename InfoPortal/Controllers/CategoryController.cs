@@ -1,5 +1,8 @@
 ﻿using BuisnesLogic;
 using Common;
+using Common.Exceptions;
+using InfoPortal.Flters;
+using MyLogger;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +10,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using Unity;
+using WebApi.OutputCache.V2;
 
 namespace InfoPortal.Controllers
 {
@@ -28,41 +32,52 @@ namespace InfoPortal.Controllers
         }
                 
         [HttpPost]
-        public bool AddCategory([FromBody]Category category)
+        public void AddCategory([FromBody]Category category)
         {
-            if (ModelState.IsValid)
-            {
-                _categoryAccessing.Add(category);
+            Validation();
 
-                return true;
-            }
-            else
-            {
-                return false;
-            } 
+            _categoryAccessing.Add(category);
         }
 
         [HttpPut]
-        public bool EditCategory(int id, [FromBody]Category category)
+        public void EditCategory(int id, [FromBody]Category category)
         {
-            if (ModelState.IsValid)
-            {
-                _categoryAccessing.Edit(category);
+            Validation();
 
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            _categoryAccessing.Edit(category);
         }
 
         [HttpDelete]
-        public bool DeleteCategory([FromBody]Category category)
+        public void DeleteCategory(int id)
         {
-            _categoryAccessing.Delete(category);
+            _categoryAccessing.Delete(id);
+        }
 
-            return true;
+        private void Validation()
+        {
+            if (ModelState.IsValid)
+            {
+                string models = "";
+
+                foreach (var model in ModelState.Keys)
+                {
+                    models += model + " ";
+                }
+
+                Log.Debug("action: " + ActionContext.Request.Method.Method + " " + ActionContext.ActionDescriptor.ActionName + " Data: ' " + models + " ' Valid ");
+            }
+            else
+            {
+                string message = "";
+
+                foreach (var mess in ModelState.Values)
+                {
+                    foreach (var err in mess.Errors)
+                        message += err.ErrorMessage + " ";
+                }
+
+                throw new NotValidException(message);
+            }
         }
     }
 }

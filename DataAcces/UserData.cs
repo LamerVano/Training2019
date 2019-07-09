@@ -82,7 +82,7 @@ namespace DataAcces
             CallProcedure(entity, sqlProcedure);
         }
 
-        public void Delete(User entity)
+        public void Delete(int id)
         {
             string sqlExpression = "DELETE Users WHERE Id = @id";
 
@@ -95,15 +95,15 @@ namespace DataAcces
                 SqlCommand command = new SqlCommand(sqlExpression, connection);
 
                 command.Parameters.Add("@id", SqlDbType.Int);
-                command.Parameters["@id"].Value = entity.Id;
+                command.Parameters["@id"].Value = id;
 
                 try
                 {
                     command.ExecuteNonQuery();
                 }
-                catch
+                catch (SqlException ex)
                 {
-                    return;
+                    throw ex;
                 }
             }            
         }
@@ -116,7 +116,7 @@ namespace DataAcces
         }
 
 
-        private bool CallProcedure(User user, string sqlProcedure)
+        private void CallProcedure(User user, string sqlProcedure)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -180,12 +180,11 @@ namespace DataAcces
                 {
                     command.ExecuteNonQuery();
                 }
-                catch
+                catch (SqlException ex)
                 {
-                    return false;
+                    throw ex;
                 }
             }
-            return true;
         }
 
     }

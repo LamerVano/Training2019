@@ -8,7 +8,7 @@ namespace DataAcces
 {
     public class ArticleData : Connect, IArticleData
     {        
-        private bool CallProcedure(Article article, string sqProcedure)
+        private void CallProcedure(Article article, string sqProcedure)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -25,6 +25,13 @@ namespace DataAcces
                     Value = article.Id
                 };
                 command.Parameters.Add(idParam);
+
+                SqlParameter userIdParam = new SqlParameter
+                {
+                    ParameterName = "@userId",
+                    Value = article.UserId
+                };
+                command.Parameters.Add(userIdParam);
 
                 SqlParameter nameParam = new SqlParameter
                 {
@@ -65,12 +72,11 @@ namespace DataAcces
                 {
                     command.ExecuteNonQuery();
                 }
-                catch
+                catch(SqlException ex)
                 {
-                    return false;
+                    throw ex;
                 }
             }
-            return true;
         }
 
         public IEnumerable<Article> GetByCategoryId(int categoryId)
@@ -189,7 +195,7 @@ namespace DataAcces
             CallProcedure(entity, sqlProcedure);
         }
 
-        public void Delete(Article entity)
+        public void Delete(int id)
         {
             string sqlExpression = "DELETE Category WHERE Id = @id";
 
@@ -202,7 +208,7 @@ namespace DataAcces
                 SqlCommand command = new SqlCommand(sqlExpression, connection);
 
                 command.Parameters.Add("@id", SqlDbType.Int);
-                command.Parameters["@id"].Value = entity.Id;
+                command.Parameters["@id"].Value = id;
 
                 try
                 {
@@ -221,5 +227,6 @@ namespace DataAcces
                         
             CallProcedure(entity, sqlExpression);
         }
+                
     }
 }
