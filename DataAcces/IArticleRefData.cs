@@ -10,5 +10,6 @@ namespace DataAcces
 {
     public interface IArticleRefData: IRepository<ArticleReferences>
     {
+        IEnumerable<ArticleReference> ListShortArticle();
     }
 }

@@ -11,6 +11,8 @@ namespace Common
     {
         public int Id { get; set; }
         [Required]
+        public int UserId { get; set; }
+        [Required]
         [StringLength(50)]
         public string Name { get; set; }
         [Required]
@@ -20,6 +22,7 @@ namespace Common
         public string Language { get; set; }
         [StringLength(256)]
         public string Picture { get; set; }
+        [Required]
         [StringLength(256)]
         public string Video { get; set; }
         public ArticleReferences References { get; set; }

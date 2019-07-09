@@ -77,7 +77,7 @@ namespace DataAcces
             CallProcedure(entity, sqlProcedure);
         }
 
-        public void Delete(Category entity)
+        public void Delete(int id)
         {
             string sqlExpression = "DELETE Category WHERE Id = @id";
 
@@ -90,7 +90,7 @@ namespace DataAcces
                 SqlCommand command = new SqlCommand(sqlExpression, connection);
 
                 command.Parameters.Add("@id", SqlDbType.Int);
-                command.Parameters["@id"].Value = entity.Id;
+                command.Parameters["@id"].Value = id;
 
                 try
                 {
@@ -138,9 +138,9 @@ namespace DataAcces
                 {
                     command.ExecuteNonQuery();
                 }
-                catch
+                catch (SqlException ex)
                 {
-                    return false;
+                    throw ex;
                 }
             }
             return true;
