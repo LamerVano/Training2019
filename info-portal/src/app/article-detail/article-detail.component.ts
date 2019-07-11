@@ -23,6 +23,12 @@ export class ArticleDetailComponent implements OnInit {
 
   ngOnInit() {
     this.getArticle();
+    if (this.article.ArticleRefs.Refs == null) {
+      this.article.ArticleRefs.Refs = [];
+    }
+    if (this.article.CategoryRefs.Refs == null) {
+      this.article.CategoryRefs.Refs = [];
+    }
   }
 
   getArticle(): void {

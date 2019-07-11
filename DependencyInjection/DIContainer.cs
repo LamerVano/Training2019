@@ -25,6 +25,7 @@ namespace DependencyInjection
             container.RegisterType<IArticleData, ArticleData>();
             container.RegisterType<ICategoryData, CategoryData>();
             container.RegisterType<IArticleRefData, ArticleRefData>();
+            container.RegisterType<ICategoryRefsData, CategoryRefsData>();
 
             return container;
         }

@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { ArticleReferences } from '../models/articleReferences';
 import { Article } from '../models/article';
+import { Location } from '@angular/common';
+import { Observable } from 'rxjs';
 
 import { ArticleService } from '../article.service';
 import { ActivatedRoute } from '@angular/router';
+import { CategoryReferences } from '../models/categoryReferences';
+import { CategoryService } from '../category.service';
 
 @Component({
   selector: 'app-article-add',
@@ -13,24 +16,34 @@ import { ActivatedRoute } from '@angular/router';
 export class ArticleAddComponent implements OnInit {
 
   article: Article;
+  image: File;
 
   constructor(
     private route: ActivatedRoute,
-    private articleService: ArticleService
-    ) { }
+    private articleService: ArticleService,
+    private location: Location,
+    private categoryService: CategoryService
+  ) { }
 
   ngOnInit() {
     this.getArticle();
+    if (this.route.snapshot.paramMap.has('id')) {
+      this.categoryService.getCategory(+this.route.snapshot.paramMap.get('id'));
+    }
   }
 
   getArticle(): void {
-    this.article = {} as Article;
+    this.article = { CategoryRefs: { Refs: [] }, ArticleRefs: { Refs: [] } } as Article;
   }
 
   add(): void {
-    this.article.Name = this.article.Name.trim();
-    if ( !this.article.Name || !this.article.Language || !this.article.Video) { return; }
+    // if ( !this.article.Name || !this.article.Language || !this.article.Video) { return; }
     this.articleService.addArticle(this.article)
-      .subscribe();
+      .subscribe(() => this.goBack());
   }
+
+  goBack(): void {
+    this.location.back();
+  }
+
 }

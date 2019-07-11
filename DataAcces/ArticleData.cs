@@ -22,49 +22,56 @@ namespace DataAcces
                 SqlParameter idParam = new SqlParameter
                 {
                     ParameterName = "@id",
-                    Value = article.Id
+                    Value = article.Id,
+                    SqlDbType = SqlDbType.Int
                 };
                 command.Parameters.Add(idParam);
 
                 SqlParameter userIdParam = new SqlParameter
                 {
                     ParameterName = "@userId",
-                    Value = article.UserId
+                    Value = article.UserId,
+                    SqlDbType = SqlDbType.Int
                 };
                 command.Parameters.Add(userIdParam);
 
                 SqlParameter nameParam = new SqlParameter
                 {
                     ParameterName = "@name",
-                    Value = article.Name
+                    Value = article.Name,
+                    SqlDbType = SqlDbType.NVarChar
                 };
                 command.Parameters.Add(nameParam);
 
                 SqlParameter dateParam = new SqlParameter
                 {
                     ParameterName = "@date",
-                    Value = article.Date
+                    Value = article.Date,
+                    SqlDbType = SqlDbType.Date
                 };
                 command.Parameters.Add(dateParam);
 
                 SqlParameter langParam = new SqlParameter
                 {
                     ParameterName = "@language",
-                    Value = article.Language
+                    Value = article.Language,
+                    SqlDbType = SqlDbType.NVarChar
                 };
                 command.Parameters.Add(langParam);
 
                 SqlParameter pictureParam = new SqlParameter
                 {
                     ParameterName = "@pictureRef",
-                    Value = article.Picture
+                    Value = article.Picture,
+                    SqlDbType = SqlDbType.NVarChar
                 };
                 command.Parameters.Add(pictureParam);
 
                 SqlParameter videoParam = new SqlParameter
                 {
                     ParameterName = "@videoRef",
-                    Value = article.Video
+                    Value = article.Video,
+                    SqlDbType = SqlDbType.NVarChar
                 };
                 command.Parameters.Add(videoParam);
 
@@ -83,7 +90,7 @@ namespace DataAcces
         {
             List<Article> articles = new List<Article>();
 
-            string sqlExpressionArticles = "SELECT ArticleId, Name, Date, Language, PictureRef, VideoRef FROM ArticlesOfCategory WHERE CategoryId = @id";
+            string sqlExpressionArticles = "SELECT ArticleId, UserId, ArticleName, Date, Language, PictureRef, VideoRef FROM ArticlesOfCategory WHERE CategoryId = @id";
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -100,14 +107,16 @@ namespace DataAcces
                     {
                         while (reader.Read())
                         {
-                            Article article = new Article();
-
-                            article.Id = (int)reader["ArticleId"];
-                            article.Name = (string)reader["Name"];
-                            article.Date = (DateTime)reader["Date"];
-                            article.Language = (string)reader["Language"];
-                            article.Picture = (string)reader["PictureRef"];
-                            article.Video = (string)reader["VideoRef"];
+                            Article article = new Article
+                            {
+                                Id = (int)reader["ArticleId"],
+                                UserId = (int)reader["UserId"],
+                                Name = (string)reader["ArticleName"],
+                                Date = (DateTime)reader["Date"],
+                                Language = (string)reader["Language"],
+                                Picture = (string)reader["PictureRef"],
+                                Video = (string)reader["VideoRef"]
+                            };
 
                             articles.Add(article);
                         }
@@ -197,7 +206,7 @@ namespace DataAcces
 
         public void Delete(int id)
         {
-            string sqlExpression = "DELETE Category WHERE Id = @id";
+            string sqlExpression = "DELETE Articles WHERE Id = @id";
 
             Category category = new Category();
 
@@ -227,6 +236,30 @@ namespace DataAcces
                         
             CallProcedure(entity, sqlExpression);
         }
+
+        public int GetLastIndex()
+        {
+            string sqlExpression = "SELECT Id FROM Articles ORDER BY Id DESC";
+
+            int id = 1;
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                TryOpenConnection(connection);
+
+                SqlCommand command = new SqlCommand(sqlExpression, connection);
                 
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        reader.Read();
+                        id = (int)reader["Id"];
+                    }
+                }
+            }
+
+            return id;
+        }
     }
 }

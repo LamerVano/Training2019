@@ -18,7 +18,8 @@
       Video:
       <input [(ngModel)]="article.Video" placeholder="Video"/>
     </label>
-    <app-article-refs [article]="article"></app-article-refs>
+    <app-article-refs [article]="article.ArticleRefs"></app-article-refs>
+    <app-article-categ-refs [categories]="article.CategoryRefs"></app-article-categ-refs>
   </div>
   <button (click)="goBack()">go back</button>
   <button (click)="save()">save</button>

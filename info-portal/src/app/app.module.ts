@@ -12,6 +12,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { ArticleDetailComponent } from './article-detail/article-detail.component';
 import { ArticleAddComponent } from './article-add/article-add.component';
 import { ArticleRefsComponent } from './article-refs/article-refs.component';
+import { ArticleCategRefsComponent } from './article-categ-refs/article-categ-refs.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { ArticleRefsComponent } from './article-refs/article-refs.component';
     DashboardComponent,
     ArticleDetailComponent,
     ArticleAddComponent,
-    ArticleRefsComponent
+    ArticleRefsComponent,
+    ArticleCategRefsComponent
   ],
   imports: [
     BrowserModule,

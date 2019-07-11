@@ -9,13 +9,22 @@ namespace Common
 {
     public class Article : IEntity
     {
-        public int Id { get; set; }
-        [Required]
+        public int Id {
+            get { return id; }
+            set
+            {
+                id = value;
+                if(ArticleRefs != null)
+                    ArticleRefs.Id = value;
+                if(CategoryRefs != null)
+                    CategoryRefs.Id = value;
+            }
+        }
+        private int id;
         public int UserId { get; set; }
         [Required]
         [StringLength(50)]
         public string Name { get; set; }
-        [Required]
         public DateTime Date { get; set; }
         [Required]
         [StringLength(15)]
@@ -25,6 +34,7 @@ namespace Common
         [Required]
         [StringLength(256)]
         public string Video { get; set; }
-        public ArticleReferences References { get; set; }
+        public ArticleReferences ArticleRefs { get; set; }
+        public CategoryReferences CategoryRefs { get; set; }
     }
 }

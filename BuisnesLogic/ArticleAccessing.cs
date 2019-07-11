@@ -8,30 +8,40 @@ namespace BuisnesLogic
     {
         IArticleData _articleData;
         IArticleRefData _articleRefData;
+        ICategoryRefsData _categoryRefsData;
 
-        public ArticleAccessing(IArticleData articleData, IArticleRefData articleRefData)
+        public ArticleAccessing(IArticleData articleData, IArticleRefData articleRefData, ICategoryRefsData categoryRefsData)
         {
             _articleData = articleData;
             _articleRefData = articleRefData;
+            _categoryRefsData = categoryRefsData;
         }
 
         public void Add(Article entity)
         {
             _articleData.Add(entity);
-            if (entity.References != null)
-                _articleRefData.Add(entity.References);
+
+            entity.Id = _articleData.GetLastIndex();
+
+            if (entity.ArticleRefs != null)
+                _articleRefData.Add(entity.ArticleRefs);
+
+            if (entity.CategoryRefs != null)
+                _categoryRefsData.Add(entity.CategoryRefs);
         }
 
         public void Delete(int id)
         {
             _articleData.Delete(id);
             _articleRefData.Delete(id);
+            _categoryRefsData.Delete(id);
         }
 
         public void Edit(Article entity)
         {
             _articleData.Edit(entity);
-            _articleRefData.Edit(entity.References);
+            _articleRefData.Edit(entity.ArticleRefs);
+            _categoryRefsData.Edit(entity.CategoryRefs);
         }
 
         public IEnumerable<Article> GetByCategoryId(int categoryId)
@@ -41,7 +51,8 @@ namespace BuisnesLogic
 
             foreach(Article article in articles)
             {
-                article.References = _articleRefData.GetById(article.Id);
+                article.ArticleRefs = _articleRefData.GetById(article.Id);
+                article.CategoryRefs = _categoryRefsData.GetById(article.Id);
             }
 
             return articles;
@@ -51,7 +62,8 @@ namespace BuisnesLogic
         {
             Article article = _articleData.GetById(id);
 
-            article.References = _articleRefData.GetById(article.Id);
+            article.ArticleRefs = _articleRefData.GetById(article.Id);
+            article.CategoryRefs = _categoryRefsData.GetById(article.Id);
 
             return article;
         }
@@ -63,7 +75,8 @@ namespace BuisnesLogic
 
             foreach (Article article in articles)
             {
-                article.References = _articleRefData.GetById(article.Id);
+                article.ArticleRefs = _articleRefData.GetById(article.Id);
+                article.CategoryRefs = _categoryRefsData.GetById(article.Id);
             }
 
             return articles;

@@ -14,9 +14,15 @@ import { catchError, map, tap } from 'rxjs/operators';
 })
 export class ArticleService {
 
-  private articlesUrl = 'api/Article';
+  private articlesUrl = 'http://localhost:50592/api/Article';
 
   constructor(private http: HttpClient) { }
+
+  getAllArticles(): Observable<Article[]> {
+    const url = `${this.articlesUrl}/all`;
+    return this.http.get<Article[]>(url)
+      .pipe(catchError(this.handleError<Article[]>('getAllArticles', [])));
+  }
 
   getArticles(id: number): Observable<Article[]> {
     const url = `${this.articlesUrl}/byCategory/${id}`;
@@ -48,16 +54,13 @@ export class ArticleService {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     };
     return this.http.post<Article>(this.articlesUrl, article, httpOptions)
-      .pipe(catchError(this.handleError<any>('updateArticle')));
+      .pipe(catchError(this.handleError<any>('addArticle')));
   }
 
-  deleteArticle(article: Article | number): Observable<Article> {
-    const id = typeof article === 'number' ? article : article.Id;
+  deleteArticle(article: Article): Observable<Article> {
+    const id = article.Id;
     const url = `${this.articlesUrl}/${id}`;
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-    };
-    return this.http.delete<Article>(url, httpOptions)
+    return this.http.delete<Article>(url)
     .pipe(catchError(this.handleError<Article>('deleteHero')));
   }
 

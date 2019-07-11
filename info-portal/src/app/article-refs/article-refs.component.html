@@ -1,1 +1,22 @@
-<p>article-refs works!</p>
+<div *ngIf="article">
+  <ul>
+    <li *ngFor="let shortArticle of article.Refs">
+      <p>
+        <span>{{shortArticle.Id}}</span> {{shortArticle.Name}}
+      </p> |
+      <button class="delete" title="delete article"
+      (click)="delete(shortArticle)">Del</button>
+    </li>
+  </ul>
+</div>
+<div *ngIf="allArticles">
+  <ul>
+    <li *ngFor="let shortArticle of allArticles">
+      <p>
+        <span>{{shortArticle.Id}}</span> {{shortArticle.Name}}
+      </p> |
+      <button class="add" title="add article"
+      (click)="add(shortArticle)">Add</button>
+    </li>
+  </ul>
+</div>

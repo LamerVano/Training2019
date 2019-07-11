@@ -5,18 +5,17 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using Common;
 
 namespace DataAcces
 {
-    public class ArticleRefData : Connect, IArticleRefData
+    public class CategoryRefsData : Connect, ICategoryRefsData
     {
-        public void Add(ArticleReferences entity)
+        public void Add(CategoryReferences entity)
         {
             if (entity.Refs != null)
             {
-                string sqlProcedure = "AddReference";
+                string sqlProcedure = "AddCategoryRef";
 
                 CallProcedure(entity, sqlProcedure);
             }
@@ -24,7 +23,7 @@ namespace DataAcces
 
         public void Delete(int id)
         {
-            string sqlExpression = "Delete ArticlesRef where ArticlesRef.IdArticle = @id";
+            string sqlExpression = "Delete CategoryRefs where CategoryRefs.IdArticle = @id";
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -46,20 +45,20 @@ namespace DataAcces
             }
         }
 
-        public void Edit(ArticleReferences entity)
+        public void Edit(CategoryReferences entity)
         {
             Delete(entity.Id);
             Add(entity);
         }
 
-        public ArticleReferences GetById(int id)
+        public CategoryReferences GetById(int id)
         {
-            string sqlExpressionReference = "SELECT ReferenceId, Name FROM ReferenceToArticle WHERE ArticleId = @id";
+            string sqlExpressionReference = "SELECT CategoryId, CategoryName FROM ArticlesOfCategory WHERE ArticleId = @id";
 
-            ArticleReferences articlesRefs = new ArticleReferences()
+            CategoryReferences categoryRefs = new CategoryReferences()
             {
                 Id = id,
-                Refs = new List<ArticleReference>()
+                Refs = new List<Category>()
             };
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -77,26 +76,26 @@ namespace DataAcces
                     {
                         while (readerRef.Read())
                         {
-                            ArticleReference articleRef = new ArticleReference
+                            Category reference = new Category
                             {
-                                Id = (int)readerRef["ReferenceId"],
-                                Name = (string)readerRef["Name"]
+                                Id = (int)readerRef["CategoryId"],
+                                Name = (string)readerRef["CategoryName"]
                             };
 
-                            articlesRefs.Refs.Add(articleRef);
+                            categoryRefs.Refs.Add(reference);
                         }
                     }
                 }
             }
 
-            return articlesRefs;
+            return categoryRefs;
         }
 
-        public IEnumerable<ArticleReferences> List()
+        public IEnumerable<CategoryReferences> List()
         {
-            List<ArticleReferences> articlesRefsList = new List<ArticleReferences>();
+            List<CategoryReferences> categoriesRefsList = new List<CategoryReferences>();
 
-            string sqlExpression = "SELECT ArticleId, ReferenceId, Name FROM ReferenceToArticle";
+            string sqlExpression = "SELECT ArticleId, CategoryId, CategoryName FROM ArticlesOfCategory";
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -110,73 +109,38 @@ namespace DataAcces
                     {
                         while (reader.Read())
                         {
-                            ArticleReferences articleRefs = new ArticleReferences
+                            CategoryReferences categoryRefs = new CategoryReferences
                             {
                                 Id = (int)reader["ArticleId"]
                             };
 
-                            ArticleReferences article = articlesRefsList.FirstOrDefault(art => art.Id == articleRefs.Id);
+                            CategoryReferences article = categoriesRefsList.FirstOrDefault(art => art.Id == categoryRefs.Id);
 
                             if (article != null)
                             {
-                                article.Refs.Add(new ArticleReference
+                                article.Refs.Add(new Category
                                 {
-                                    Id = (int)reader["ReferenceId"],
-                                    Name = (string)reader["Name"]
+                                    Id = (int)reader["CategoryId"],
+                                    Name = (string)reader["CategoryName"]
                                 });
                             }
                             else
                             {
-                                articlesRefsList.Add(articleRefs);
+                                categoriesRefsList.Add(categoryRefs);
                             }
                         }
                     }
                 }
             }
 
-
-
-            return articlesRefsList;
+            return categoriesRefsList;
         }
 
-        public IEnumerable<ArticleReference> ListShortArticle()
-        {
-            List<ArticleReference> articles = new List<ArticleReference>();
-
-            string sqlExpression = "SELECT Id, Name FROM Articles";
-
-            using (SqlConnection connection = new SqlConnection(_connectionString))
-            {
-                TryOpenConnection(connection);
-
-                SqlCommand command = new SqlCommand(sqlExpression, connection);
-
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            ArticleReference article = new ArticleReference
-                            {
-                                Id = (int)reader["Id"],
-                                Name = (string)reader["Name"]
-                            };
-
-                            articles.Add(article);
-                        }
-                    }
-                }
-            }
-
-            return articles;
-        }
-
-        private void CallProcedure(ArticleReferences articleRefs, string sqlProcedure)
+        private void CallProcedure(CategoryReferences categoryRefs, string sqlProcedure)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                foreach (ArticleReference reference in articleRefs.Refs)
+                foreach (Category reference in categoryRefs.Refs)
                 {
                     TryOpenConnection(connection);
 
@@ -188,13 +152,13 @@ namespace DataAcces
                     SqlParameter idParam = new SqlParameter
                     {
                         ParameterName = "@articleId",
-                        Value = articleRefs.Id
+                        Value = categoryRefs.Id
                     };
                     command.Parameters.Add(idParam);
 
                     SqlParameter nameParam = new SqlParameter
                     {
-                        ParameterName = "@referenceId",
+                        ParameterName = "@categoryId",
                         Value = reference.Id
                     };
                     command.Parameters.Add(nameParam);

@@ -33,24 +33,54 @@ namespace InfoPortal.Controllers
         }
 
         [HttpGet]
+        [Route("all")]
+        public IEnumerable<Article> GetAllArticles()
+        {
+            return _accessing.List();
+        }
+
+        [HttpGet]
         [Route("byCategory/{id:int}")]
-        [CacheOutput(ClientTimeSpan = 100, ServerTimeSpan = 100)]
+        [CacheOutput(ClientTimeSpan = 1, ServerTimeSpan = 1)]
         public IEnumerable<Article> GetArticlesOfCategory(int id)
         {
             return _accessing.GetByCategoryId(id);
         }
 
         [HttpGet]
-        [CacheOutput(ClientTimeSpan = 100, ServerTimeSpan = 100)]
+        [CacheOutput(ClientTimeSpan = 1, ServerTimeSpan = 1)]
         public Article GetArticle(int id)
         {
             return _accessing.GetById(id);
         }
 
         [HttpPost]
+        public void AddArticle([FromBody]Article article)
+        {
+            article.Date = DateTime.Now;
+
+            article.UserId = 1;
+
+            try
+            {
+                Validation();
+            }
+            catch { }
+
+            _accessing.Add(article);
+
+        }
+
+        [HttpPost]
+        [Route("image")]
         public void AddArticle([FromBody]Article article, [FromBody] HttpPostedFileBase image)
         {
-            Validation();
+            article.Date = DateTime.Now;
+            try
+            {
+                Validation();
+            }
+            catch { }
 
 
             string path = "~/Content/Articles/" + article.Id;
@@ -63,20 +93,26 @@ namespace InfoPortal.Controllers
             {
                 image.SaveAs(article.Picture);
             }
-            catch(NotImplementedException)
-            {                
+            catch (NotImplementedException)
+            {
                 throw new NotImplementedException("Not Modify because Image don't Save");
             }
-            
+
             _accessing.Add(article);
 
         }
 
         [HttpPut]
-        public void EditArticle(int id, [FromBody]Article article, [FromBody] HttpPostedFileBase image)
+        [Route("image")]
+        public void EditArticle([FromBody]Article article, [FromBody] HttpPostedFileBase image)
         {
-            Validation();
-            
+            article.Date = DateTime.Now;
+            try
+            {
+                Validation();
+            }
+            catch { }
+
             try
             {
                 image.SaveAs(article.Picture);
@@ -86,14 +122,19 @@ namespace InfoPortal.Controllers
                 throw new NotImplementedException("Not Save because Image don't Save");
             }
 
-            _accessing.Add(article);
+            _accessing.Edit(article);
 
         }
 
         [HttpPut]
-        public void EditArticle(int id, [FromBody]Article article)
+        public void EditArticle([FromBody]Article article)
         {
-            Validation();
+            article.Date = DateTime.Now;
+            try
+            {
+                Validation();
+            }
+            catch { }
 
             _accessing.Edit(article);
         }
@@ -124,7 +165,7 @@ namespace InfoPortal.Controllers
                 foreach (var mess in ModelState.Values)
                 {
                     foreach (var err in mess.Errors)
-                        message += err.ErrorMessage + " ";
+                        message += err.Exception.Message + " ";
                 }
 
                 throw new NotValidException(message);
