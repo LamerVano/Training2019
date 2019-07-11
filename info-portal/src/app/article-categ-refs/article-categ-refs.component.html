@@ -1,0 +1,22 @@
+<div *ngIf="categories">
+  <ul>
+    <li *ngFor="let category of categories.Refs">
+      <p>
+        <span>{{category.Id}}</span> {{category.Name}}
+      </p> |
+      <button class="delete" title="delete category"
+      (click)="delete(category)">Del</button>
+    </li>
+  </ul>
+</div>
+<div *ngIf="allCategory">
+  <ul>
+    <li *ngFor="let category of allCategory">
+      <p>
+        <span>{{category.Id}}</span> {{category.Name}}
+      </p> |
+      <button class="add" title="add category"
+      (click)="add(category)">Add</button>
+    </li>
+  </ul>
+</div>

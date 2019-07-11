@@ -6,5 +6,6 @@ namespace DataAcces
     public interface IArticleData: IRepository<Article>
     {
         IEnumerable<Article> GetByCategoryId(int categoryId);
+        int GetLastIndex();
     }
 }

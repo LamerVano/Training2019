@@ -80,10 +80,12 @@
     <Compile Include="ArticleData.cs" />
     <Compile Include="ArticleRefData.cs" />
     <Compile Include="CategoryData.cs" />
+    <Compile Include="CategoryRefsData.cs" />
     <Compile Include="Connect.cs" />
     <Compile Include="IArticleData.cs" />
     <Compile Include="IArticleRefData.cs" />
     <Compile Include="ICategoryData.cs" />
+    <Compile Include="ICategoryRefsData.cs" />
     <Compile Include="IRepository.cs" />
     <Compile Include="IUserData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

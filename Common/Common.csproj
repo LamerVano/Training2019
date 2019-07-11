@@ -81,6 +81,7 @@
     <Compile Include="ArticleReference.cs" />
     <Compile Include="ArticleReferences.cs" />
     <Compile Include="Category.cs" />
+    <Compile Include="CategoryReferences.cs" />
     <Compile Include="Exceptions\NotValidException.cs" />
     <Compile Include="IEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

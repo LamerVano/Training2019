@@ -40,7 +40,7 @@ namespace InfoPortal.Controllers
         }
 
         [HttpPut]
-        public void EditCategory(int id, [FromBody]Category category)
+        public void EditCategory([FromBody]Category category)
         {
             Validation();
 

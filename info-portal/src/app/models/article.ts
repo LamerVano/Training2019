@@ -1,4 +1,5 @@
 import { ArticleReferences } from './articleReferences';
+import { CategoryReferences } from './categoryReferences';
 export class Article {
   Id: number;
   UserId: number;
@@ -7,5 +8,6 @@ export class Article {
   Language: string;
   Picture: string;
   Video: string;
-  References: ArticleReferences;
+  ArticleRefs: ArticleReferences;
+  CategoryRefs: CategoryReferences;
 }

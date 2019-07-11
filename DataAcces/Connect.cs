@@ -31,6 +31,12 @@ namespace DataAcces
                 }
                 TryOpenConnection(connection);
             }
+            catch(System.InvalidOperationException)
+            {
+                SqlConnection.ClearPool(connection);
+
+                TryOpenConnection(connection);
+            }
         }
                 
     }

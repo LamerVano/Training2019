@@ -4,10 +4,17 @@
     <li *ngFor="let article of articles">
       <a routerLink="/article/detail/{{article.Id}}">
         <span>{{article.Id}}</span> {{article.Name}}
-      </a>
+      </a> |
       <button class="delete" title="delete article"
       (click)="delete(article)">Del</button>
-      <a routerLink="/article/add/{{article.Id}}">Add</a>
+      <p></p>
     </li>
   </ul>
 </div>
+
+<a routerLink="/article/add/{{id}}">Add</a>
+
+<p></p>
+
+<button (click)="goBack()">go back</button>
+
