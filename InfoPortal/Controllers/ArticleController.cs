@@ -16,6 +16,7 @@ using Common.Exceptions;
 
 namespace InfoPortal.Controllers
 {
+    [Authorize]
     [RoutePrefix("api/Article")]
     public class ArticleController : ApiController
     {
@@ -27,6 +28,7 @@ namespace InfoPortal.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IEnumerable<ArticleReference> GetShortArticles()
         {
             return _accessing.ListShortArticle();
@@ -34,6 +36,7 @@ namespace InfoPortal.Controllers
 
         [HttpGet]
         [Route("all")]
+        [AllowAnonymous]
         public IEnumerable<Article> GetAllArticles()
         {
             return _accessing.List();
@@ -41,14 +44,22 @@ namespace InfoPortal.Controllers
 
         [HttpGet]
         [Route("byCategory/{id:int}")]
-        [CacheOutput(ClientTimeSpan = 1, ServerTimeSpan = 1)]
+        [AllowAnonymous]
         public IEnumerable<Article> GetArticlesOfCategory(int id)
         {
             return _accessing.GetByCategoryId(id);
         }
 
         [HttpGet]
-        [CacheOutput(ClientTimeSpan = 1, ServerTimeSpan = 1)]
+        [Route("byUser/{id}")]
+        [AllowAnonymous]
+        public IEnumerable<Article> GetArticlesOfUser(string id)
+        {
+            return _accessing.GetByUserId(id);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
         public Article GetArticle(int id)
         {
             return _accessing.GetById(id);
@@ -59,13 +70,7 @@ namespace InfoPortal.Controllers
         {
             article.Date = DateTime.Now;
 
-            article.UserId = 1;
-
-            try
-            {
-                Validation();
-            }
-            catch { }
+            Validation();
 
             _accessing.Add(article);
 
@@ -73,49 +78,61 @@ namespace InfoPortal.Controllers
 
         [HttpPost]
         [Route("image")]
-        public void AddArticle([FromBody]Article article, [FromBody] HttpPostedFileBase image)
+        public void AddArticle()
         {
-            article.Date = DateTime.Now;
+            var request = HttpContext.Current.Request;
+
+            var image = request.Files["image"];
+
+            Validation();
+
+            int id = _accessing.GetLastIndex();
+
+            string path = "~/Content/Articles/" + id;
+
+            string pathInModel = "/Content/Articles/" + id;
+
+            string imgType = "." + image.FileName.Split('.').Last();
+
+            Article article = _accessing.GetById(id);
+
+            article.Picture = pathInModel + imgType;
+
             try
             {
-                Validation();
-            }
-            catch { }
-
-
-            string path = "~/Content/Articles/" + article.Id;
-
-            string imgType = "." + image.FileName.Split('.')[1];
-
-            article.Picture = path + imgType;
-
-            try
-            {
-                image.SaveAs(article.Picture);
+                image.SaveAs(path + imgType);
             }
             catch (NotImplementedException)
             {
                 throw new NotImplementedException("Not Modify because Image don't Save");
             }
 
-            _accessing.Add(article);
+            _accessing.Edit(article);
 
         }
 
         [HttpPut]
-        [Route("image")]
-        public void EditArticle([FromBody]Article article, [FromBody] HttpPostedFileBase image)
+        [Route("image/{id:int}")]
+        public void EditArticle(int id)
         {
-            article.Date = DateTime.Now;
-            try
-            {
-                Validation();
-            }
-            catch { }
+
+            var request = HttpContext.Current.Request;
+
+            var image = request.Files["image"];
+            
+            Article article = _accessing.GetById(id);
+
+            string path = HttpContext.Current.Server.MapPath("~/Content/Articles/" + id);
+
+            string pathInModel = "/Content/Articles/" + id;
+
+            string imgType = "." + image.FileName.Split('.').Last();
+
+            article.Picture = pathInModel + imgType;
 
             try
             {
-                image.SaveAs(article.Picture);
+                image.SaveAs(path + imgType);
             }
             catch (NotImplementedException)
             {
@@ -145,6 +162,22 @@ namespace InfoPortal.Controllers
             _accessing.Delete(id);
         }
 
+        [HttpGet]
+        [AllowAnonymous]
+        public IEnumerable<Article> SearchArticle([FromUri]string name)
+        {
+            return _accessing.Search(name);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        //[Route("SearchByDate")]
+        public IEnumerable<Article> SearchArticleByDate([FromUri]string date)
+        {
+            DateTime time = DateTime.Parse(date);
+            return _accessing.SearchByDate(time);
+        }
+
         private void Validation()
         {
             if (ModelState.IsValid)
@@ -165,7 +198,7 @@ namespace InfoPortal.Controllers
                 foreach (var mess in ModelState.Values)
                 {
                     foreach (var err in mess.Errors)
-                        message += err.Exception.Message + " ";
+                        message += err.ErrorMessage + " ";
                 }
 
                 throw new NotValidException(message);

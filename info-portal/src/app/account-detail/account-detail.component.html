@@ -1,0 +1,16 @@
+<div *ngIf="user">
+  <h2>{{user.Name}} Detail</h2>
+  <div><span>id: </span>{{user.Id}}</div>
+
+    <label>
+      Name: {{user.Name}}
+    </label>
+    <p></p>
+    <label>
+      E-Mail: {{user.Email}}
+    </label>
+    <p></p>
+
+  <button (click)="goBack()">go back</button>
+  <button routerLink="/account/change">Change</button>
+</div>

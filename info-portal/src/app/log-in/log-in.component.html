@@ -1,0 +1,15 @@
+<div>
+  <p>Log In</p>
+
+  <label>
+    User Name:
+    <input #UserName placeholder="UserName"/>
+  </label>
+  <p></p>
+  <label>
+    Password:
+    <input type="password" #Password placeholder="Password"/>
+  </label>
+</div>
+<button (click)="goBack()">go back</button>
+<button (click)="login(UserName.value, Password.value)">login</button>

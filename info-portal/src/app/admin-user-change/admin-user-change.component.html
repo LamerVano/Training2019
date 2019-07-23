@@ -1,0 +1,28 @@
+<div *ngIf="user">
+  <h2>{{user.Name}} Change</h2>
+  <div><span>id: </span>{{user.Id}}</div>
+  <div>
+    <label>
+      Name: <input [(ngModel)]="user.Name" placeholder="Name" />
+    </label>
+    <p></p>
+    <label>
+      E-Mail: <input [(ngModel)]="user.Email" placeholder="E-Mail" />
+    </label>
+    <p></p>
+    <label>
+      Old Password: <input type="password" #OldPassword placeholder="Old Password" />
+    </label><p></p>
+    <label>
+      New Password: <input type="password" #NewPassword placeholder="New Password" />
+    </label>
+    <p></p>
+    <label>
+      Confirm Password: <input type="password" #ConfirmPassword placeholder="Confirm Password" />
+    </label>
+    <p></p>
+    <button *ngIf="isAdmin" (click)="savePassword(OldPassword.value, NewPassword.value, ConfirmPassword.value)">Set Password</button>
+  </div>
+  <button (click)="goBack()">go back</button>
+  <button *ngIf="isAdmin" (click)="save()">save</button>
+</div>

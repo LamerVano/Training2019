@@ -19,7 +19,7 @@ namespace InfoPortal.Flters
         {
             return Task.Run(() =>
             {
-                Log.Debug("Start " + actionContext.Request.Method.Method + " " + actionContext.ActionDescriptor.ActionName);
+                Log.Debug("Start " + actionContext.Request.Method.Method + " " + actionContext.ControllerContext.ControllerDescriptor.ControllerName + " " + actionContext.ActionDescriptor.ActionName);
                 
             });
         }
@@ -29,7 +29,7 @@ namespace InfoPortal.Flters
         {
             return Task.Run(() =>
             {
-                Log.Debug("End " + actionExecutedContext.ActionContext.Request.Method.Method + " " + actionExecutedContext.ActionContext.ActionDescriptor.ActionName);
+                Log.Debug("End " + actionExecutedContext.ActionContext.Request.Method.Method +  " " + actionExecutedContext.ActionContext.ControllerContext.ControllerDescriptor.ControllerName + " " + actionExecutedContext.ActionContext.ActionDescriptor.ActionName);
             });
         }
     }

@@ -14,6 +14,7 @@ using WebApi.OutputCache.V2;
 
 namespace InfoPortal.Controllers
 {
+    [Authorize]
     [RoutePrefix("api/Category")]
     public class CategoryController : ApiController
     {
@@ -26,6 +27,7 @@ namespace InfoPortal.Controllers
 
 
         [HttpGet]
+        [AllowAnonymous]
         public IEnumerable<Category> GetCategories()
         {
             return _categoryAccessing.List();
@@ -51,6 +53,13 @@ namespace InfoPortal.Controllers
         public void DeleteCategory(int id)
         {
             _categoryAccessing.Delete(id);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IEnumerable<Category> SearchCategory([FromUri]string name)
+        {
+            return _categoryAccessing.Search(name);
         }
 
         private void Validation()
