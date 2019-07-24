@@ -1,7 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CategoryReferences } from '../models/categoryReferences';
 import { Category } from '../models/category';
-import { CategoryService } from '../category.service';
+import { CategoryService } from '../services/category.service';
+import { Router } from '@angular/router';
+import { User } from '../models/account/user';
+import { AccountService } from '../services/account.service';
 
 @Component({
   selector: 'app-article-categ-refs',
@@ -13,10 +16,20 @@ export class ArticleCategRefsComponent implements OnInit {
   @Input() categories: CategoryReferences;
   allCategory: Category[];
   selectedCategory: Category;
+  currentUser: User;
 
-  constructor(private categoryService: CategoryService) { }
+  constructor(
+    private categoryService: CategoryService,
+    private router: Router,
+    private accountService: AccountService
+  ) { }
+
+  getCurrentUser(): void {
+    this.accountService.currentUser.subscribe(user => this.currentUser = user);
+  }
 
   ngOnInit() {
+    this.getCurrentUser();
     this.getArticles();
   }
 

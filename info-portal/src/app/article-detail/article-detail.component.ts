@@ -4,7 +4,7 @@ import { Article } from '../models/article';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 
-import { ArticleService } from '../article.service';
+import { ArticleService } from '../services/article.service';
 
 @Component({
   selector: 'app-article-detail',

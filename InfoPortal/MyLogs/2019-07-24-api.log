@@ -135,3 +135,16 @@
 2019-07-24 01:44:29.1235|DEBUG|MyLogger.Log|End GET Account isAdmin
 2019-07-24 01:44:29.2045|DEBUG|MyLogger.Log|Start GET Account GetUser
 2019-07-24 01:44:29.2155|DEBUG|MyLogger.Log|End GET Account GetUser
+2019-07-24 12:58:53.9149|DEBUG|MyLogger.Log|Start GET Category GetCategories
+2019-07-24 13:01:18.2732|DEBUG|MyLogger.Log|Start GET Category GetCategories
+2019-07-24 13:01:18.2732|DEBUG|MyLogger.Log|End GET Category GetCategories
+2019-07-24 13:01:18.3032|ERROR|MyLogger.Log|При установлении соединения с SQL Server произошла ошибка, связанная с сетью или с определенным экземпляром. Сервер не найден или недоступен. Убедитесь, что имя экземпляра указано правильно и что на SQL Server разрешены удаленные соединения. (provider: SQL Network Interfaces, error: 50 - Произошла ошибка Local Database Runtime.Указанный экземпляр LocalDB не существует.
+)GetCategories
+2019-07-24 13:02:05.7719|DEBUG|MyLogger.Log|End GET Category GetCategories
+2019-07-24 13:02:05.7869|ERROR|MyLogger.Log|При установлении соединения с SQL Server произошла ошибка, связанная с сетью или с определенным экземпляром. Сервер не найден или недоступен. Убедитесь, что имя экземпляра указано правильно и что на SQL Server разрешены удаленные соединения. (provider: SQL Network Interfaces, error: 50 - Произошла ошибка Local Database Runtime.Указанный экземпляр LocalDB не существует.
+)GetCategories
+2019-07-24 13:03:25.6585|DEBUG|MyLogger.Log|Start GET Category GetCategories
+2019-07-24 13:05:05.9752|DEBUG|MyLogger.Log|End GET Category GetCategories
+2019-07-24 13:05:06.4362|ERROR|MyLogger.Log|Подключение к серверу успешно установлено, но затем произошла ошибка при входе. (provider: Named Pipes Provider, error: 0 - С обоих концов канала отсутствуют процессы.)GetCategories
+2019-07-24 13:06:50.8602|DEBUG|MyLogger.Log|Start GET Category GetCategories
+2019-07-24 13:06:53.4634|DEBUG|MyLogger.Log|End GET Category GetCategories

@@ -21,7 +21,8 @@ namespace Common
             }
         }
         private int id;
-        public int UserId { get; set; }
+        [StringLength(128)]
+        public string UserId { get; set; }
         [Required]
         [StringLength(50)]
         public string Name { get; set; }

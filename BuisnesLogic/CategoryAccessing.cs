@@ -7,7 +7,7 @@ namespace BuisnesLogic
     public class CategoryAccessing : ICategoryAccessing
     {
         ICategoryData _categoryData;
-        
+
         public CategoryAccessing(ICategoryData categoryData)
         {
             _categoryData = categoryData;
@@ -36,6 +36,15 @@ namespace BuisnesLogic
         public IEnumerable<Category> List()
         {
             return _categoryData.List();
+        }
+
+        public IEnumerable<Category> Search(string term)
+        {
+            List<Category> categories = new List<Category>();
+            categories.AddRange(_categoryData.List());
+
+            return categories.FindAll(category => category.Name.Contains(term));
+
         }
     }
 }

@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Category } from '../models/category';
 
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 
-import { CategoryService } from '../category.service';
+import { CategoryService } from '../services/category.service';
+import { AccountService } from '../services/account.service';
+import { User } from '../models/account/user';
 
 @Component({
   selector: 'app-category-detail',
@@ -14,14 +16,27 @@ import { CategoryService } from '../category.service';
 export class CategoryDetailComponent implements OnInit {
 
   category: Category;
+  currentUser: User;
 
   constructor(
     private route: ActivatedRoute,
     private categoryService: CategoryService,
-    private location: Location
-    ) { }
+    private location: Location,
+    private accountService: AccountService,
+    private router: Router
+  ) { }
+
+  getCurrentUser(): void {
+    this.accountService.currentUser.subscribe(user => {
+      if (!user) {
+        this.router.navigate(['/categories']);
+      }
+      this.currentUser = user;
+    });
+  }
 
   ngOnInit() {
+    this.getCurrentUser();
     this.getCategory();
   }
 
@@ -38,5 +53,9 @@ export class CategoryDetailComponent implements OnInit {
   save(): void {
     this.categoryService.updateCategory(this.category)
       .subscribe(() => this.goBack());
+  }
+
+  delete(category: Category): void {
+    this.categoryService.deleteCategory(category).subscribe(() => this.goBack());
   }
 }

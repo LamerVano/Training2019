@@ -1,22 +1,18 @@
-<div *ngIf="article">
+<div *ngIf="article" class="articles">
+  <label>References to Articles</label>
   <ul>
     <li *ngFor="let shortArticle of article.Refs">
-      <p>
-        <span>{{shortArticle.Id}}</span> {{shortArticle.Name}}
-      </p> |
-      <button class="delete" title="delete article"
-      (click)="delete(shortArticle)">Del</button>
+      <label class="badge"> {{shortArticle.Name}}</label>
+      <button *ngIf="currentUser" class="badge" class="delete" title="delete article" (click)="delete(shortArticle)">Del</button>
     </li>
   </ul>
 </div>
-<div *ngIf="allArticles">
+<div *ngIf="allArticles && currentUser" class="articles">
+  Add References to another Articles
   <ul>
     <li *ngFor="let shortArticle of allArticles">
-      <p>
-        <span>{{shortArticle.Id}}</span> {{shortArticle.Name}}
-      </p> |
-      <button class="add" title="add article"
-      (click)="add(shortArticle)">Add</button>
+      <label class="badge"> {{shortArticle.Name}}</label>
+      <button class="add" title="add article" (click)="add(shortArticle)">Add</button>
     </li>
   </ul>
 </div>

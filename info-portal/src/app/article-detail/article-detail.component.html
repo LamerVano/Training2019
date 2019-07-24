@@ -1,26 +1,27 @@
 <div *ngIf="article">
   <h2>{{article.Name}} Detail</h2>
   <div><span>id: </span>{{article.Id}}</div>
-  <div>
-    <label>
-      Name:
-      <input [(ngModel)]="article.Name" placeholder="Name"/>
-    </label>
-    <label>
-      Language:
-      <input [(ngModel)]="article.Language" placeholder="Language"/>
-    </label>
-    <label>
-      Picture:
-      <input [(ngModel)]="article.Picture" placeholder="Picture"/>
-    </label>
-    <label>
-      Video:
-      <input [(ngModel)]="article.Video" placeholder="Video"/>
-    </label>
-    <app-article-refs [article]="article.ArticleRefs"></app-article-refs>
-    <app-article-categ-refs [categories]="article.CategoryRefs"></app-article-categ-refs>
-  </div>
+  <span *ngIf="article.Picture">
+    <img src="http://localhost:50592{{article.Picture}}" width="100" />
+    <p></p>
+  </span>
+  <label>
+    Name: {{article.Name}}
+  </label>
+  <p></p>
+  <label>
+    Language: {{article.Language}}
+  </label>
+  <p></p>
+  <label>
+    Picture: {{article.Picture}}
+  </label>
+  <p></p>
+  <iframe width="420" height="315"
+    src="{{article.Video}}">
+  </iframe>
+  <app-article-refs [article]="article.ArticleRefs"></app-article-refs>
+  <app-article-categ-refs [categories]="article.CategoryRefs"></app-article-categ-refs>
+
   <button (click)="goBack()">go back</button>
-  <button (click)="save()">save</button>
 </div>

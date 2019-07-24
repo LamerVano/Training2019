@@ -1,20 +1,18 @@
-<div *ngIf="categories">
+<div *ngIf="categories" class="categories">
+  <label>References to Categories</label>
   <ul>
     <li *ngFor="let category of categories.Refs">
-      <p>
-        <span>{{category.Id}}</span> {{category.Name}}
-      </p> |
-      <button class="delete" title="delete category"
+      <label class="badge">{{category.Name}}</label>
+      <button *ngIf="currentUser" class="delete" title="delete category"
       (click)="delete(category)">Del</button>
     </li>
   </ul>
 </div>
-<div *ngIf="allCategory">
+<div *ngIf="allCategory && currentUser" class="categories">
+  Add References to Another Categories
   <ul>
     <li *ngFor="let category of allCategory">
-      <p>
-        <span>{{category.Id}}</span> {{category.Name}}
-      </p> |
+      <label class="badge">{{category.Name}}</label>
       <button class="add" title="add category"
       (click)="add(category)">Add</button>
     </li>

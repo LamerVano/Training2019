@@ -2,7 +2,7 @@ import { ArticleReferences } from './articleReferences';
 import { CategoryReferences } from './categoryReferences';
 export class Article {
   Id: number;
-  UserId: number;
+  UserId: string;
   Name: string;
   Date: Date;
   Language: string;

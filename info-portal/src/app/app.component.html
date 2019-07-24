@@ -1,9 +1,19 @@
 <!--The content below is only a placeholder and can be replaced.-->
 <h1>{{title}}</h1>
-<nav>
-  <a routerLink="/dashboard">Dashboard</a> |
+<nav (change)="onChange()">
+  <label *ngIf="!currentUser">
+    <a routerLink="/register">Register</a> |
+    <a routerLink="/login">LogIn</a> |
+  </label>
+  <label *ngIf="currentUser">
+    <a routerLink="/account">Account</a> |
+    <a (click)="logout()">Logout</a> |
+  </label>
   <a routerLink="/categories">Categories</a> |
-  <a routerLink="/articles">Articles</a>
+  <a routerLink="/articles">Articles</a> |
+  <a routerLink="/search">Search</a> |
+  <a routerLink="/searchByDate">Search by Date</a> |
+  <a routerLink="/searchByCategory">Search by Category</a> |
+  <a *ngIf="isAdmin" routerLink="/admin/users">All Users</a>
 </nav>
 <router-outlet></router-outlet>
-
