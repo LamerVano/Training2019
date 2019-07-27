@@ -9,6 +9,7 @@ import { CategoryReferences } from '../models/categoryReferences';
 import { CategoryService } from '../services/category.service';
 import { AccountService } from '../services/account.service';
 import { User } from '../models/account/user';
+import { MessageService } from '../message.service';
 
 @Component({
   selector: 'app-article-add',
@@ -27,12 +28,14 @@ export class ArticleAddComponent implements OnInit {
     private articleService: ArticleService,
     private location: Location,
     private categoryService: CategoryService,
-    private router: Router
+    private router: Router,
+    private messageService: MessageService
   ) { }
 
   getCurrentUser(): void {
     this.accountService.currentUser.subscribe(user => {
       if (!user) {
+        this.log('Not LogIn');
         this.router.navigate(['/articles']);
       }
       this.currentUser = user;
@@ -65,17 +68,22 @@ export class ArticleAddComponent implements OnInit {
     }
 
     this.articleService.addArticle(this.article)
-        .subscribe(() => this.goBack());
+        .subscribe(() => {
+          this.log('Save Succesed');
+          this.goBack();
+        });
   }
 
   addPicture(): void {
     this.articleService.addPicture(this.image)
-      .subscribe(() => this.goBack());
+      .subscribe(() => {
+        this.log('Save Succesed');
+        this.goBack();
+      });
   }
 
   getId(): void {
     this.accountService.getId().subscribe(id => {
-      console.log(id);
       this.article.UserId = id;
     });
   }
@@ -84,4 +92,7 @@ export class ArticleAddComponent implements OnInit {
     this.location.back();
   }
 
+  log(message: string): void {
+    this.messageService.add(message);
+  }
 }

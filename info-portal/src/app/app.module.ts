@@ -24,6 +24,7 @@ import { AccountDetailComponent } from './account-detail/account-detail.componen
 import { AccountChangeComponent } from './account-change/account-change.component';
 import { AdminUserChangeComponent } from './admin-user-change/admin-user-change.component';
 import { JwtInterceptor } from './_helpers/jwtInterceptor';
+import { MessagesComponent } from './messages/messages.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { JwtInterceptor } from './_helpers/jwtInterceptor';
     AdminUsersComponent,
     AccountDetailComponent,
     AccountChangeComponent,
-    AdminUserChangeComponent
+    AdminUserChangeComponent,
+    MessagesComponent
   ],
   imports: [
     BrowserModule,

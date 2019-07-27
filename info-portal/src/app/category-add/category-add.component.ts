@@ -5,6 +5,7 @@ import { Location } from '@angular/common';
 import { AccountService } from '../services/account.service';
 import { User } from '../models/account/user';
 import { Router } from '@angular/router';
+import { MessageService } from '../message.service';
 
 @Component({
   selector: 'app-category-add',
@@ -19,12 +20,14 @@ export class CategoryAddComponent implements OnInit {
     private categoryService: CategoryService,
     private location: Location,
     private accountService: AccountService,
-    private router: Router
+    private router: Router,
+    private messageService: MessageService
   ) { }
 
   getCurrentUser(): void {
     this.accountService.currentUser.subscribe(user => {
       if (!user) {
+        this.log('You not Login');
         this.router.navigate(['/categories']);
       }
       this.currentUser = user;
@@ -39,10 +42,17 @@ export class CategoryAddComponent implements OnInit {
     name = name.trim();
     if (!name) { return; }
     this.categoryService.addCategory({ Name: name } as Category)
-      .subscribe(() => this.goBack());
+      .subscribe(() => {
+        this.log('Save Succesed');
+        this.goBack();
+      });
   }
 
   goBack(): void {
     this.location.back();
+  }
+
+  log(message: string): void {
+    this.messageService.add(message);
   }
 }

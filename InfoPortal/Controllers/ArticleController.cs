@@ -18,9 +18,11 @@ namespace InfoPortal.Controllers
 {
     [Authorize]
     [RoutePrefix("api/Article")]
+    [AutoInvalidateCacheOutput(TryMatchType = true)]
     public class ArticleController : ApiController
     {
         IArticleAccessing _accessing;
+        static bool _mustRevaliid = true;
 
         public ArticleController(IArticleAccessing accessing)
         {
@@ -29,6 +31,7 @@ namespace InfoPortal.Controllers
 
         [HttpGet]
         [AllowAnonymous]
+        [CacheOutput(ClientTimeSpan = 100, ServerTimeSpan = 10)]
         public IEnumerable<ArticleReference> GetShortArticles()
         {
             return _accessing.ListShortArticle();
@@ -37,6 +40,7 @@ namespace InfoPortal.Controllers
         [HttpGet]
         [Route("all")]
         [AllowAnonymous]
+        [CacheOutput(ClientTimeSpan = 100, ServerTimeSpan = 10)]
         public IEnumerable<Article> GetAllArticles()
         {
             return _accessing.List();
@@ -45,6 +49,7 @@ namespace InfoPortal.Controllers
         [HttpGet]
         [Route("byCategory/{id:int}")]
         [AllowAnonymous]
+        [CacheOutput(ClientTimeSpan = 100, ServerTimeSpan = 10)]
         public IEnumerable<Article> GetArticlesOfCategory(int id)
         {
             return _accessing.GetByCategoryId(id);
@@ -53,6 +58,7 @@ namespace InfoPortal.Controllers
         [HttpGet]
         [Route("byUser/{id}")]
         [AllowAnonymous]
+        [CacheOutput(ClientTimeSpan = 100, ServerTimeSpan = 10)]
         public IEnumerable<Article> GetArticlesOfUser(string id)
         {
             return _accessing.GetByUserId(id);
@@ -60,12 +66,14 @@ namespace InfoPortal.Controllers
 
         [HttpGet]
         [AllowAnonymous]
+        [CacheOutput(ClientTimeSpan = 100, ServerTimeSpan = 10)]
         public Article GetArticle(int id)
         {
             return _accessing.GetById(id);
         }
 
         [HttpPost]
+        [CacheOutput(MustRevalidate = true)]
         public void AddArticle([FromBody]Article article)
         {
             article.Date = DateTime.Now;
@@ -77,6 +85,7 @@ namespace InfoPortal.Controllers
         }
 
         [HttpPost]
+        [CacheOutput(MustRevalidate = true)]
         [Route("image")]
         public void AddArticle()
         {
@@ -88,9 +97,9 @@ namespace InfoPortal.Controllers
 
             int id = _accessing.GetLastIndex();
 
-            string path = "~/Content/Articles/" + id;
+            string path = "~/Content/Article/" + id;
 
-            string pathInModel = "/Content/Articles/" + id;
+            string pathInModel = "/Content/Article/" + id;
 
             string imgType = "." + image.FileName.Split('.').Last();
 
@@ -112,6 +121,7 @@ namespace InfoPortal.Controllers
         }
 
         [HttpPut]
+        [CacheOutput(MustRevalidate = true)]
         [Route("image/{id:int}")]
         public void EditArticle(int id)
         {
@@ -122,9 +132,9 @@ namespace InfoPortal.Controllers
             
             Article article = _accessing.GetById(id);
 
-            string path = HttpContext.Current.Server.MapPath("~/Content/Articles/" + id);
+            string path = HttpContext.Current.Server.MapPath("~/Content/Article/" + id);
 
-            string pathInModel = "/Content/Articles/" + id;
+            string pathInModel = "/Content/Article/" + id;
 
             string imgType = "." + image.FileName.Split('.').Last();
 
@@ -144,6 +154,7 @@ namespace InfoPortal.Controllers
         }
 
         [HttpPut]
+        [CacheOutput(MustRevalidate = true)]
         public void EditArticle([FromBody]Article article)
         {
             article.Date = DateTime.Now;
@@ -157,6 +168,7 @@ namespace InfoPortal.Controllers
         }
 
         [HttpDelete]
+        [CacheOutput(MustRevalidate = true)]
         public void DeleteArticle(int id)
         {
             _accessing.Delete(id);
@@ -164,6 +176,7 @@ namespace InfoPortal.Controllers
 
         [HttpGet]
         [AllowAnonymous]
+        [CacheOutput(ClientTimeSpan = 100, ServerTimeSpan = 10)]
         public IEnumerable<Article> SearchArticle([FromUri]string name)
         {
             return _accessing.Search(name);
@@ -171,6 +184,7 @@ namespace InfoPortal.Controllers
 
         [HttpGet]
         [AllowAnonymous]
+        [CacheOutput(ClientTimeSpan = 100, ServerTimeSpan = 10)]
         //[Route("SearchByDate")]
         public IEnumerable<Article> SearchArticleByDate([FromUri]string date)
         {

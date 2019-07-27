@@ -7,6 +7,7 @@ import { Location } from '@angular/common';
 import { CategoryService } from '../services/category.service';
 import { AccountService } from '../services/account.service';
 import { User } from '../models/account/user';
+import { MessageService } from '../message.service';
 
 @Component({
   selector: 'app-category-detail',
@@ -23,12 +24,14 @@ export class CategoryDetailComponent implements OnInit {
     private categoryService: CategoryService,
     private location: Location,
     private accountService: AccountService,
-    private router: Router
+    private router: Router,
+    private messageService: MessageService
   ) { }
 
   getCurrentUser(): void {
     this.accountService.currentUser.subscribe(user => {
       if (!user) {
+        this.log('You not Login');
         this.router.navigate(['/categories']);
       }
       this.currentUser = user;
@@ -52,10 +55,20 @@ export class CategoryDetailComponent implements OnInit {
 
   save(): void {
     this.categoryService.updateCategory(this.category)
-      .subscribe(() => this.goBack());
+      .subscribe(() => {
+        this.log('Save Succesed');
+        this.goBack();
+      });
   }
 
   delete(category: Category): void {
-    this.categoryService.deleteCategory(category).subscribe(() => this.goBack());
+    this.categoryService.deleteCategory(category).subscribe(() => {
+      this.log('Delete Succesed');
+      this.goBack();
+    });
+  }
+
+  log(message: string): void {
+    this.messageService.add(message);
   }
 }

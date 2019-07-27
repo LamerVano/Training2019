@@ -6,4 +6,5 @@ export class User {
   // tslint:disable-next-line: variable-name
   expires_in: number;
   userName: string;
+  id: string;
 }

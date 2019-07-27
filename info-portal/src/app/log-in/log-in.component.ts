@@ -4,6 +4,7 @@ import { AccountService } from '../services/account.service';
 import { Location } from '@angular/common';
 import { User } from '../models/account/user';
 import { Router } from '@angular/router';
+import { MessageService } from '../message.service';
 
 @Component({
   selector: 'app-log-in',
@@ -17,12 +18,14 @@ export class LogInComponent implements OnInit {
   constructor(
     private accountService: AccountService,
     protected location: Location,
-    private router: Router
+    private router: Router,
+    private messageService: MessageService
   ) { }
 
   ngOnInit(): void {
     this.accountService.currentUser.subscribe(user => {
       if (user) {
+        this.log('You already LogIn');
         this.router.navigate(['/articlies']);
       }
       this.currentUser = user;
@@ -32,10 +35,17 @@ export class LogInComponent implements OnInit {
   login(userName: string, password: string): void {
     const model = { UserName: userName, Password: password } as LoginBindingModel;
     this.accountService.login(model)
-      .subscribe(() => this.router.navigate(['/articles']));
+      .subscribe(() => {
+        this.log('LogIn Succesed');
+        this.router.navigate(['/articles']);
+      } );
   }
 
   goBack(): void {
     this.location.back();
+  }
+
+  log(message: string): void {
+    this.messageService.add(message);
   }
 }
