@@ -1,0 +1,9 @@
+<div>
+  <label>Category name:
+    <input #CategoryName />
+  </label> |
+
+  <button *ngIf="currentUser" (click)="add(CategoryName.value); CategoryName.value=''">
+    add
+  </button>
+</div>

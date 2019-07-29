@@ -1,0 +1,43 @@
+2019-07-09 14:52:01.1763|DEBUG|MyLogger.Log|Start GET GetShortArticles09.07.2019 14:52:01
+2019-07-09 14:52:01.2413|DEBUG|MyLogger.Log|action: GetShortArticles Data  Valid 09.07.2019 14:52:01
+2019-07-09 14:52:49.8490|DEBUG|MyLogger.Log|End GET GetShortArticles09.07.2019 14:52:49
+2019-07-09 14:54:52.0250|DEBUG|MyLogger.Log|Start GET GetCategories09.07.2019 14:54:52
+2019-07-09 14:54:52.0250|DEBUG|MyLogger.Log|action: GetCategories Data  Valid 09.07.2019 14:54:52
+2019-07-09 14:54:52.4321|DEBUG|MyLogger.Log|End GET GetCategories09.07.2019 14:54:52
+2019-07-09 14:59:55.0644|DEBUG|MyLogger.Log|Start PUT EditCategory09.07.2019 14:59:55
+2019-07-09 15:04:44.7609|DEBUG|MyLogger.Log|Start PUT EditCategory09.07.2019 15:04:44
+2019-07-09 15:06:22.8095|DEBUG|MyLogger.Log|action: EditCategory Data id Valid 09.07.2019 15:06:22
+2019-07-09 15:06:41.0856|DEBUG|MyLogger.Log|End PUT EditCategory09.07.2019 15:06:41
+2019-07-09 15:06:52.6843|DEBUG|MyLogger.Log|Start PUT EditCategory09.07.2019 15:06:52
+2019-07-09 15:07:44.7282|ERROR|MyLogger.Log|idcategoryNot Valid in action: EditCategory09.07.2019 15:07:44
+2019-07-09 15:08:35.0551|DEBUG|MyLogger.Log|Start GET GetCategories09.07.2019 15:08:35
+2019-07-09 15:08:35.0551|DEBUG|MyLogger.Log|action: GetCategories Data  Valid 09.07.2019 15:08:35
+2019-07-09 15:08:37.2432|DEBUG|MyLogger.Log|End GET GetCategories09.07.2019 15:08:37
+2019-07-09 15:09:04.6788|DEBUG|MyLogger.Log|Start GET GetArticle09.07.2019 15:09:04
+2019-07-09 15:09:09.6811|DEBUG|MyLogger.Log|action: GetArticle Data id Valid 09.07.2019 15:09:09
+2019-07-09 15:09:09.7191|DEBUG|MyLogger.Log|End GET GetArticle09.07.2019 15:09:09
+2019-07-09 15:12:55.0620|DEBUG|MyLogger.Log|Start GET GetArticle09.07.2019 15:12:55
+2019-07-09 15:12:57.7741|DEBUG|MyLogger.Log|action: GetArticle Data id Valid 09.07.2019 15:12:57
+2019-07-09 15:12:57.7871|DEBUG|MyLogger.Log|End GET GetArticle09.07.2019 15:12:57
+2019-07-09 15:23:06.1589|DEBUG|MyLogger.Log|Start GET GetArticle09.07.2019 15:23:06
+2019-07-09 15:23:21.3518|DEBUG|MyLogger.Log|action: GetArticle Data id Valid 09.07.2019 15:23:21
+2019-07-09 15:23:48.3033|DEBUG|MyLogger.Log|End GET GetArticle09.07.2019 15:23:48
+2019-07-09 15:24:55.1032|DEBUG|MyLogger.Log|Start PUT EditCategory09.07.2019 15:24:55
+2019-07-09 15:25:18.9025|ERROR|MyLogger.Log|idcategoryNot Valid in action: EditCategory09.07.2019 15:25:18
+2019-07-09 15:25:21.7297|DEBUG|MyLogger.Log|Start PUT EditCategory09.07.2019 15:25:21
+2019-07-09 15:25:53.1785|ERROR|MyLogger.Log|idcategory.IdNot Valid in action: EditCategory09.07.2019 15:25:53
+2019-07-09 15:25:56.6197|DEBUG|MyLogger.Log|Start PUT EditCategory09.07.2019 15:25:56
+2019-07-09 15:26:27.3394|DEBUG|MyLogger.Log|action: EditCategory Data id Valid 09.07.2019 15:26:27
+2019-07-09 15:26:44.2784|DEBUG|MyLogger.Log|End PUT EditCategory09.07.2019 15:26:44
+2019-07-09 15:26:49.3997|DEBUG|MyLogger.Log|Start PUT EditCategory09.07.2019 15:26:49
+2019-07-09 15:27:53.1943|DEBUG|MyLogger.Log|action: EditCategory Data id Valid 09.07.2019 15:27:53
+2019-07-09 15:27:54.0984|DEBUG|MyLogger.Log|End PUT EditCategory09.07.2019 15:27:54
+2019-07-09 15:28:05.8381|DEBUG|MyLogger.Log|Start PUT EditCategory09.07.2019 15:28:05
+2019-07-09 15:37:09.6892|DEBUG|MyLogger.Log|Start PUT EditCategory09.07.2019 15:37:09
+2019-07-09 15:38:05.3034|ERROR|MyLogger.Log|Требуется поле Name. Not Valid in action: EditCategory09.07.2019 15:38:05
+2019-07-09 15:50:16.4032|DEBUG|MyLogger.Log|Start PUT EditCategory09.07.2019 15:50:16
+2019-07-09 15:50:36.7483|DEBUG|MyLogger.Log|End PUT EditCategory09.07.2019 15:50:36
+2019-07-09 15:50:36.7703|ERROR|MyLogger.Log|Требуется поле Name. Not Valid in action: EditCategory09.07.2019 15:50:36
+2019-07-09 15:51:10.5533|DEBUG|MyLogger.Log|Start PUT EditCategory09.07.2019 15:51:10
+2019-07-09 15:51:13.0144|DEBUG|MyLogger.Log|End PUT EditCategory09.07.2019 15:51:13
+2019-07-09 15:51:45.1593|ERROR|MyLogger.Log|Требуется поле Name. Not Valid in action: EditCategory09.07.2019 15:51:45

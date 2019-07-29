@@ -6,5 +6,6 @@ namespace BuisnesLogic
 {
     public interface ICategoryAccessing: IService<Category>
     {
+        IEnumerable<Category> Search(string term);
     }
 }

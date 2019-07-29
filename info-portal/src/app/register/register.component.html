@@ -1,0 +1,25 @@
+
+  <div>
+    <p>Register</p>
+    <label>
+      Email:
+      <input [(ngModel)]="registerModel.Email" placeholder="Email"/>
+    </label>
+    <p></p>
+    <label>
+      Login:
+      <input [(ngModel)]="registerModel.Login" placeholder="Login"/>
+    </label>
+    <p></p>
+    <label>
+      Password:
+      <input type="password" [(ngModel)]="registerModel.Password" placeholder="Password"/>
+    </label>
+    <p></p>
+    <label>
+      Confirm Password:
+      <input type="password" [(ngModel)]="registerModel.ConfirmPassword" placeholder="Confirm Password"/>
+    </label>
+  </div>
+  <button (click)="goBack()">go back</button>
+  <button (click)="register()">register</button>

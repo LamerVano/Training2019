@@ -4,10 +4,13 @@
   <div><span>id: </span>{{category.Id}}</div>
   <div>
     <label>name:
-      <input [(ngModel)]="category.Name" placeholder="Name"/>
+      <input [(ngModel)]="category.Name" placeholder="Name" />
     </label>
   </div>
   <button (click)="goBack()">go back</button>
-  <button (click)="save()">save</button>
+  <div *ngIf="currentUser">
+    <button (click)="save()">save</button>
+    <button class="delete" title="delete category" (click)="delete(category)">Del</button>
+  </div>
 
 </div>

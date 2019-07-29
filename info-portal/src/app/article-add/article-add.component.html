@@ -1,31 +1,30 @@
 
   <div>
     <label>
-      Date:
-      <input [(ngModel)]="article.Date" placeholder="Date"/>
-    </label>
-    <label>
-      UserId:
-      <input [(ngModel)]="article.UserId" placeholder="UserId"/>
-    </label>
-    <label>
       Name:
-      <input [(ngModel)]="article.Name" placeholder="Name"/>
+      <input type="text" #Name placeholder="Name"/>
     </label>
+    <p></p>
     <label>
       Language:
-      <input [(ngModel)]="article.Language" placeholder="Language"/>
+      <input type="text" #Language placeholder="Language"/>
     </label>
+    <p></p>
     <label>
       Picture:
-      <input [(ngModel)]="article.Picture" placeholder="Picture"/>
+      <input type="file" accept=".png" #Picture name="image" #Picture (change)="onChange($event.target.files)" placeholder="Picture"/>
     </label>
+    <p></p>
     <label>
       Video:
-      <input [(ngModel)]="article.Video" placeholder="Video"/>
+      <input type="url" #Video placeholder="Refrrence to Video"/>
     </label>
-    <app-article-refs [article]="article.ArticleRefs"></app-article-refs>
+
+    <div>
+      <app-article-refs [article]="article.ArticleRefs"></app-article-refs>
+    </div>
+
     <app-article-categ-refs [categories]="article.CategoryRefs"></app-article-categ-refs>
   </div>
   <button (click)="goBack()">go back</button>
-  <button (click)="add()">save</button>
+  <button *ngIf="currentUser" (click)="add(Name.value, Language.value, Video.value)">add</button>

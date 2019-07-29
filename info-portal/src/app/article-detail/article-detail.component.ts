@@ -4,7 +4,9 @@ import { Article } from '../models/article';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 
-import { ArticleService } from '../article.service';
+import { ArticleService } from '../services/article.service';
+
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-article-detail',
@@ -14,27 +16,32 @@ import { ArticleService } from '../article.service';
 export class ArticleDetailComponent implements OnInit {
 
   article: Article;
+  myurl: string;
 
   constructor(
+    public sanitizer: DomSanitizer,
     private route: ActivatedRoute,
     private articleService: ArticleService,
     private location: Location
-    ) { }
+  ) { }
 
   ngOnInit() {
     this.getArticle();
-    if (this.article.ArticleRefs.Refs == null) {
-      this.article.ArticleRefs.Refs = [];
-    }
-    if (this.article.CategoryRefs.Refs == null) {
-      this.article.CategoryRefs.Refs = [];
-    }
   }
 
   getArticle(): void {
     const id = +this.route.snapshot.paramMap.get('id');
     this.articleService.getArticle(id)
-      .subscribe(article => this.article = article);
+      .subscribe(article => {
+        this.article = article;
+        if (!this.article.ArticleRefs) {
+          this.article.ArticleRefs.Refs = [];
+        }
+        if (!this.article.CategoryRefs) {
+          this.article.CategoryRefs.Refs = [];
+        }
+        this.myurl = 'https://www.youtube.com/embed/' + article.Video;
+      });
   }
 
   goBack(): void {
@@ -45,5 +52,4 @@ export class ArticleDetailComponent implements OnInit {
     this.articleService.updateArticle(this.article)
       .subscribe(() => this.goBack());
   }
-
 }

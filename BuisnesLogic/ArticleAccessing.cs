@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Common;
 using DataAcces;
 
@@ -85,6 +86,35 @@ namespace BuisnesLogic
         public IEnumerable<ArticleReference> ListShortArticle()
         {
             return _articleRefData.ListShortArticle();
+        }
+
+        public IEnumerable<Article> GetByUserId(string id)
+        {
+            List<Article> articles = new List<Article>();
+            articles.AddRange(_articleData.List());
+
+            return articles.FindAll(article => article.UserId == id);
+        }
+
+        public IEnumerable<Article> Search(string term)
+        {
+            List<Article> articles = new List<Article>();
+            articles.AddRange(_articleData.List());
+            
+            return articles.FindAll(article => article.Name.Contains(term));
+        }
+
+        public IEnumerable<Article> SearchByDate(DateTime date)
+        {
+            List<Article> articles = new List<Article>();
+            articles.AddRange(_articleData.List());
+
+            return articles.FindAll(article => article.Date == date);
+        }
+
+        public int GetLastIndex()
+        {
+            return _articleData.GetLastIndex();
         }
     }
 }

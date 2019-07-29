@@ -1,0 +1,21 @@
+<p>Users</p>
+<div *ngIf="users" class="users">
+  <ul >
+    <li *ngFor="let user of users">
+      <label class="badge">
+        {{user.Name}}
+      </label>
+      <a *ngIf="isAdmin" class="badge" routerLink="/admin/user/{{user.Id}}">
+        Change
+      </a>
+      <button *ngIf="isAdmin" class="delete" title="delete user"
+      (click)="delete(user)">Del</button>
+    </li>
+  </ul>
+  <a *ngIf="isAdmin"y class="badge" routerLink="/register">Add</a>
+</div>
+
+<p></p>
+
+<button (click)="goBack()">go back</button>
+

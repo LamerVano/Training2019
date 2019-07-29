@@ -3,10 +3,13 @@ import { Article } from '../models/article';
 import { Location } from '@angular/common';
 import { Observable } from 'rxjs';
 
-import { ArticleService } from '../article.service';
-import { ActivatedRoute } from '@angular/router';
+import { ArticleService } from '../services/article.service';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CategoryReferences } from '../models/categoryReferences';
-import { CategoryService } from '../category.service';
+import { CategoryService } from '../services/category.service';
+import { AccountService } from '../services/account.service';
+import { User } from '../models/account/user';
+import { MessageService } from '../message.service';
 
 @Component({
   selector: 'app-article-add',
@@ -17,33 +20,79 @@ export class ArticleAddComponent implements OnInit {
 
   article: Article;
   image: File;
+  currentUser: User;
 
   constructor(
     private route: ActivatedRoute,
+    private accountService: AccountService,
     private articleService: ArticleService,
     private location: Location,
-    private categoryService: CategoryService
+    private categoryService: CategoryService,
+    private router: Router,
+    private messageService: MessageService
   ) { }
 
+  getCurrentUser(): void {
+    this.accountService.currentUser.subscribe(user => {
+      if (!user) {
+        this.log('Not LogIn');
+        this.router.navigate(['/articles']);
+      }
+      this.currentUser = user;
+    });
+  }
+
   ngOnInit() {
+    this.getCurrentUser();
     this.getArticle();
-    if (this.route.snapshot.paramMap.has('id')) {
-      this.categoryService.getCategory(+this.route.snapshot.paramMap.get('id'));
-    }
+    this.getId();
   }
 
   getArticle(): void {
     this.article = { CategoryRefs: { Refs: [] }, ArticleRefs: { Refs: [] } } as Article;
   }
 
-  add(): void {
-    // if ( !this.article.Name || !this.article.Language || !this.article.Video) { return; }
+  onChange(files: FileList) {
+    this.image = files[0];
+  }
+
+  add(name: string, language: string, video: string): void {
+    this.article.Name = name;
+    this.article.Language = language;
+    this.article.Video = video;
+
+    if (this.image && this.image !== null) {
+      this.articleService.addArticle(this.article)
+        .subscribe(() => this.addPicture());
+      return;
+    }
+
     this.articleService.addArticle(this.article)
-      .subscribe(() => this.goBack());
+        .subscribe(() => {
+          this.log('Save Succesed');
+          this.goBack();
+        });
+  }
+
+  addPicture(): void {
+    this.articleService.addPicture(this.image)
+      .subscribe(() => {
+        this.log('Save Succesed');
+        this.goBack();
+      });
+  }
+
+  getId(): void {
+    this.accountService.getId().subscribe(id => {
+      this.article.UserId = id;
+    });
   }
 
   goBack(): void {
     this.location.back();
   }
 
+  log(message: string): void {
+    this.messageService.add(message);
+  }
 }

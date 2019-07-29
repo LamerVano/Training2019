@@ -1,0 +1,28 @@
+<div *ngIf="article">
+  <h2>{{article.Name}} Change</h2>
+  <div><span>id: </span>{{article.Id}}</div>
+  <div>
+    <div hidden="true">
+      Name: <input hidden="true" [(ngModel)]="article.UserId" placeholder="UserId" />
+    </div>
+    <label>
+      Name: <input [(ngModel)]="article.Name" placeholder="Name" />
+    </label>
+    <p></p>
+    <label>
+      Language: <input [(ngModel)]="article.Language" placeholder="Language" />
+    </label>
+    <p></p>
+    <label>
+      Picture: <input type="file" accept=".png" name="image" #Picture (change)="onChange($event.target.files)" placeholder="Picture" />
+    </label>
+    <p></p>
+    <label>
+      Video: <input [(ngModel)]="article.Video" placeholder="id Video in Youtube" />
+    </label>
+    <app-article-refs [article]="article.ArticleRefs"></app-article-refs>
+    <app-article-categ-refs [categories]="article.CategoryRefs"></app-article-categ-refs>
+  </div>
+  <button (click)="goBack()">go back</button>
+  <button *ngIf="currentUser" (click)="save()">save</button>
+</div>

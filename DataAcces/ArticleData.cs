@@ -31,7 +31,8 @@ namespace DataAcces
                 {
                     ParameterName = "@userId",
                     Value = article.UserId,
-                    SqlDbType = SqlDbType.Int
+                    SqlDbType = SqlDbType.NVarChar,
+                    Size = 128
                 };
                 command.Parameters.Add(userIdParam);
 
@@ -39,7 +40,8 @@ namespace DataAcces
                 {
                     ParameterName = "@name",
                     Value = article.Name,
-                    SqlDbType = SqlDbType.NVarChar
+                    SqlDbType = SqlDbType.NVarChar,
+                    Size = 50
                 };
                 command.Parameters.Add(nameParam);
 
@@ -110,7 +112,7 @@ namespace DataAcces
                             Article article = new Article
                             {
                                 Id = (int)reader["ArticleId"],
-                                UserId = (int)reader["UserId"],
+                                UserId = (string)reader["UserId"],
                                 Name = (string)reader["ArticleName"],
                                 Date = (DateTime)reader["Date"],
                                 Language = (string)reader["Language"],
@@ -129,7 +131,7 @@ namespace DataAcces
 
         public Article GetById(int id)
         {
-            string sqlExpression = "SELECT Id, Name, Date, Language, PictureRef, VideoRef FROM Articles Where Id = @id";
+            string sqlExpression = "SELECT Id, UserId, Name, Date, Language, PictureRef, VideoRef FROM Articles Where Id = @id";
 
             Article article = new Article();
 
@@ -148,6 +150,7 @@ namespace DataAcces
                     {
                         reader.Read();
                         article.Id = (int)reader["Id"];
+                        article.UserId = (string)reader["UserId"];
                         article.Name = (string)reader["Name"];
                         article.Date = (DateTime)reader["Date"];
                         article.Language = (string)reader["Language"];

@@ -24,10 +24,7 @@ namespace InfoPortal
 
             // Web API configuration and services
             // Configure Web API to use only bearer token authentication.
-
-            var corsAttr = new EnableCorsAttribute("*", "*", "*");
-            config.EnableCors(corsAttr);
-
+            
             config.SuppressDefaultHostAuthentication();
             config.Filters.Add(new HostAuthenticationFilter(OAuthDefaults.AuthenticationType));
 
@@ -39,7 +36,7 @@ namespace InfoPortal
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { controller = "Category", id = RouteParameter.Optional }
             );
-
+            
             config.Formatters.Remove(config.Formatters.XmlFormatter);
 
             config.Filters.Add(new Logging());
