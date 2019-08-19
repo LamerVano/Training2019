@@ -79,12 +79,6 @@ export class AccountService {
     this.currentUserSubject.next(null);
   }
 
-  deleteAccount(userName: string): Observable<any> {
-    const url = `${this.accountUrl}/Delete/${userName}`;
-    return this.http.delete<any>(url)
-      .pipe(catchError(this.handleError<any>('deleteAccount')));
-  }
-
   getId(): Observable<string> {
     const url = `${this.accountUrl}/GetId`;
 
@@ -123,9 +117,15 @@ export class AccountService {
       .pipe(catchError(this.handleError<UserViewModel>('editUser')));
   }
 
-  deleteUser(user: UserViewModel): Observable<any> {
-    return this.http.delete(`${this.accountUrl}/${user.Id}`)
-      .pipe(catchError(this.handleError<any>('editUser')));
+  deleteUser(userId: string): Observable<User> {
+    this.log('Delete');
+
+    const url = `${this.accountUrl}/${userId}`;
+
+    this.log(url);
+
+    return this.http.delete<User>(url)
+      .pipe(catchError(this.handleError<User>('deleteUser')));
   }
 
   setPassword(model: ChangePasswordBindingModel, id: string): Observable<any> {

@@ -4,3 +4,9 @@ BEGIN
       FROM WINDOWS WITH DEFAULT_DATABASE=[master], 
       DEFAULT_LANGUAGE=[us_english]
 END
+GO
+CREATE USER [InfoPortalUser] 
+  FOR LOGIN [IIS APPPOOL\DefaultAppPool]
+GO
+EXEC sp_addrolemember 'db_owner', 'InfoPortalUser'
+GO
