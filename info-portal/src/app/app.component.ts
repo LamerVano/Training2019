@@ -18,7 +18,7 @@ export class AppComponent implements OnInit {
     private accountService: AccountService
   ) { }
 
-  isAdminFunc(): void {
+  public isAdminFunc(): void {
     this.accountService.isAdmin().subscribe(isadmin => this.isAdmin = isadmin);
   }
 
