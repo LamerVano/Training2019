@@ -1,3 +1,1 @@
-c: cd
-cd c:\Windows\System32\inetsrv\
-appcmd add site /name:InfoPortal /id:3 /physicalPath:%1 /bindings:http/*:8080:
+%systemroot%\system32\inetsrv\appcmd add site /name:InfoPortal /physicalPath:d:\Vano1\Git\InfoPortal\PublishAngular\ /bindings:http/*:8080:

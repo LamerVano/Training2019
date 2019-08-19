@@ -91,7 +91,7 @@ export class ArticleService {
     const id = article.Id;
     const url = `${this.articlesUrl}/${id}`;
     return this.http.delete<Article>(url)
-      .pipe(catchError(this.handleError<Article>('deleteHero')));
+      .pipe(catchError(this.handleError<Article>('deleteArticle')));
   }
 
   searchArticles(term: string): Observable<Article[]> {

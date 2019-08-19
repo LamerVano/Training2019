@@ -9,7 +9,7 @@
         Change
       </a>
       <button *ngIf="isAdmin" class="delete" title="delete user"
-      (click)="delete(user)">Del</button>
+      (click)="delete(user.Id)">Del</button>
     </li>
   </ul>
   <a *ngIf="isAdmin"y class="badge" routerLink="/register">Add</a>

@@ -31,8 +31,9 @@ export class AdminUsersComponent implements OnInit {
     this.getUsers();
   }
 
-  delete(user: UserViewModel): void {
-    this.accountService.deleteUser(user);
+  delete(userId: string): void {
+    this.users = this.users.filter(c => c.Id !== userId);
+    this.accountService.deleteUser(userId).subscribe();
   }
 
   goBack(): void {
